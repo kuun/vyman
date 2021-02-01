@@ -12,10 +12,10 @@ var log = slog.GetLogger(_logger{})
 
 // InitRouters setups routers
 func InitRouters(r *gin.Engine) {
-	r.Static("/thirdpart", "static/thirdpart")
-	r.Static("/css", "static/css")
-	r.StaticFile("/index.html", "static/index.html")
-	r.StaticFile("/login.html", "static/login.html")
+	r.Static("/thirdpart", "webapp/thirdpart")
+	r.Static("/css", "webapp/css")
+	r.StaticFile("/index.html", "webapp/index.html")
+	r.StaticFile("/login.html", "webapp/login.html")
 
 	r.POST("/api/login", session.Login)
 	r.POST("/api/logout", session.Logout)
