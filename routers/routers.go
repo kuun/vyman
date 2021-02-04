@@ -14,6 +14,8 @@ var log = slog.GetLogger(_logger{})
 func InitRouters(r *gin.Engine) {
 	r.Static("/thirdpart", "webapp/thirdpart")
 	r.Static("/css", "webapp/css")
+	r.Static("/dist", "webapp/dist")
+	r.StaticFile("/", "webapp/index.html")
 	r.StaticFile("/index.html", "webapp/index.html")
 	r.StaticFile("/login.html", "webapp/login.html")
 
