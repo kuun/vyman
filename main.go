@@ -2,8 +2,10 @@ package main
 
 import (
 	"flag"
+	"os"
 
 	"github.com/kuun/vyman/logger"
+	"github.com/kuun/vyman/services/vyosclient"
 	"github.com/kuun/vyman/session"
 
 	"github.com/gin-gonic/gin"
@@ -32,6 +34,7 @@ func main() {
 
 	session.InitSession(engine, "/var/run/vyman", "vyman")
 	routers.InitRouters(engine)
+	vyosclient.InitVyosClient("127.0.0.1", 8443, os.Getenv("HTTP_API_KEY"))
 
 	log.Warnf("vyman is starting, listen on: %s", *addr)
 	if err := engine.Run(*addr); err != nil {

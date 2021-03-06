@@ -19,7 +19,7 @@ var log = slog.GetLogger(&_logger{})
 
 func InitSession(engine *gin.Engine, sessionPath, sessionKey string) {
 	store = sessions.NewFilesystemStore(sessionPath, []byte(sessionKey))
-	store.MaxAge(600)
+	store.MaxAge(3600)
 
 	engine.Use(authFilter())
 }
@@ -31,6 +31,9 @@ func authFilter() gin.HandlerFunc {
 			return
 		}
 		if strings.HasSuffix(uri, ".css") {
+			return
+		}
+		if strings.HasSuffix(uri, ".png") {
 			return
 		}
 		if uri == "/login.html" {
@@ -45,6 +48,7 @@ func authFilter() gin.HandlerFunc {
 		}
 		if session.IsNew {
 			c.Redirect(302, "/login.html")
+			c.Abort()
 		}
 	}
 
@@ -63,6 +67,7 @@ func Login(c *gin.Context) {
 		}
 		c.JSON(200, gin.H{"success": true})
 	} else {
+		log.Warnf("user %s login failed", username)
 		session.Options.MaxAge = 0
 		session.Save(c.Request, c.Writer)
 		c.JSON(403, gin.H{"success": false})
