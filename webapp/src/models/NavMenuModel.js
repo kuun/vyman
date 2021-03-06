@@ -4,21 +4,30 @@ class NavMenuModel extends Backbone.Model {
     defaults() {
         return {
             menus: [{
+                id: 'interfaces',
+                text: '网口管理',
+                icon: 'fa fa-internet-explorer',
+                nodes: [{
+                    id: 'interfaces-ethernet',
+                    text: '以太网',
+                    icon: 'fa fa-cog'
+                }]
+            }, {
                 id: 'groups',
                 text: '组管理',
-                icon: 'fa fa-toggle-right',
+                icon: 'fa fa-sitemap',
                 nodes: [{
                     id: 'address-group',
                     text: '地址组',
-                    icon: 'fa fa-list-alt'
+                    icon: 'fa fa-cog'
                 }, {
                     id: 'network-group',
                     text: '网络组',
-                    icon: 'fa fa-list-alt'
+                    icon: 'fa fa-cog'
                 }, {
                     id: 'port-group',
                     text: '端口组',
-                    icon: 'fa fa-list-alt'
+                    icon: 'fa fa-cog'
                 }]
             }, {
                 id: 'rule-sets',

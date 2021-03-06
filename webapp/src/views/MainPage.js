@@ -1,19 +1,21 @@
 import Backbone from 'backbone';
 import Sidebar from './Sidebar';
 import NavMenuModel from '../models/NavMenuModel';
+import InterfaceLayoutView from './InterfaceLayoutView';
 
 class MainPage extends Backbone.View {
     initialize() {
-        this.el = '#mainPage';
+        this.name = 'mainPageLayout';
         this.menuModel = NavMenuModel;
         this.sidebar = new Sidebar();
-        this.listenTo(this.menuModel, 'change:activeMenuId', this.onMenuChanged);
+        this.currentView = null;
+        this.listenTo(this.menuModel, 'change:activeMenuId', () => this.onMenuChanged());
     }
 
     render() {
         var pstyle = 'border: 1px solid #dfdfdf; padding: 5px;';
         this.layout = $('#mainPage').w2layout({
-            name: 'mainPage',
+            name: this.name,
             panels: [
                 {
                     type: 'top', size: 50, style: pstyle, content: 'top'
@@ -30,7 +32,17 @@ class MainPage extends Backbone.View {
     }
 
     onMenuChanged() {
-        this.layout.content('main', this.menuModel.getActiveMenuId());
+        if (this.currentView) this.currentView.remove();
+
+        var menuId = this.menuModel.getActiveMenuId();
+        var view;
+        
+        switch (menuId) {
+            case 'interfaces-ethernet':
+                view = new InterfaceLayoutView({parentLayout: this.name});
+        }
+        view.render();
+        this.currentView = view;
     }
 }
 
