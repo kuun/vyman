@@ -24,11 +24,18 @@
         <div data-options="region:'south'" style="height:24px;">
             Version: 1.0.0
         </div>
-        <div data-options="region:'west',split:true" style="width:230px;">
+        <div data-options="region:'west'" style="width:230px;">
             <div id="navMenu">
             </div>
         </div>
-        <div data-options="region:'center',href:'/login.html'" style="padding:5px"></div>
+        <div data-options="region:'center'" >
+            <div id="moduleContent" class="easyui-layout" data-options="fit: true" >
+                <div data-options="region:'north'" style="height:30px;">
+                    <div id="moduleTitle" class="moduleTitle"></div>
+                </div>
+                <div data-options="region:'center'" ></div>
+            </div>
+        </div>
 
     </div>
     <script type="text/javascript">
@@ -44,7 +51,7 @@
                     id: 'interfacesEthernet',
                     text: '以太网',
                     iconCls: 'fa fa-cog',
-                    href: '/views/interfaces/ethernet.html'
+                    href: '/views/interface/ethernet.html'
                 }]
             }, {
                 id: 'groups',
@@ -78,12 +85,13 @@
             }];
 
             function onSelectMenu(item) {
-                var mainPage = $('#mainPage');
-                mainPage.layout('remove', 'center');
-                mainPage.layout('add', {
+                var moduleContent = $('#moduleContent');
+                moduleContent.layout('remove', 'center');
+                moduleContent.layout('add', {
                     region: 'center',
                     href: item.href,
                 })
+                $('#moduleTitle').html(item.text)
             }
 
             $('#navMenu').sidemenu({

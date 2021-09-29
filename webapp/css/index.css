@@ -12,3 +12,8 @@ html, body {
 .productTitle {
     font-size: 34px;
 }
+
+.moduleTitle {
+    font-size: 20px;
+    padding-left: 5px;
+}
