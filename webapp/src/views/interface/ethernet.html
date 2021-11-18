@@ -1,18 +1,49 @@
-<table id="tt" class="easyui-datagrid" style="width:100%;height:100%" sortName="itemid" sortOrder="asc"
-    rownumbers="true" pagination="true">
+<table id="interfaceGrid"  style="width:100%;height:100%" sortName="name" sortOrder="asc"
+    rownumbers="true" pagination="true" fitColumns="true">
     <thead>
         <tr>
-            <th field="itemid" width="80" sortable="true">Item ID</th>
-            <th field="productid" width="100" sortable="true">Product ID</th>
-            <th field="listprice" width="80" align="right" sortable="true">List Price</th>
-            <th field="unitcost" width="80" align="right" sortable="true">Unit Cost</th>
-            <th field="attr1" width="220">Attribute</th>
-            <th field="status" width="60" align="center">Stauts</th>
+            <th field="name" width="60" sortable="true">名称</th>
+            <th field="type" width="100" sortable="true">网卡类型</th>
+            <th field="mac" width="200" sortable="true">MAC</th>
+            <th field="linkStatus" width="80" align="right" sortable="true">连接状态</th>
+            <th field="enabled" width="80">是否启用</th>
+            <th field="description" width="200" align="center">备注</th>
         </tr>
     </thead>
 </table>
 
 
 <script>
-    console.log('hello')
+    $(function(){
+        var grid;
+        var toollbar =  [{
+            text:'添加',
+            iconCls:'icon-add',
+            handler:function(){alert('add')}
+        },{
+            text:'修改',
+            iconCls:'icon-cut',
+            handler:function(){alert('cut')}
+        },{
+            text:'删除',
+            iconCls:'icon-save',
+            handler:function(){alert('save')}
+        }, {
+            text:'刷新',
+            iconCls:'icon-reload',
+            handler:function(){
+                grid.datagrid('reload');
+            }
+        }];
+
+        grid = $('#interfaceGrid').datagrid({
+            toolbar: toollbar,
+            method: 'GET',
+            url: '/api/interfaces',
+            loadMsg: '处理中，请等待...'
+        });
+        
+        grid.datagrid('load');
+        
+    })
 </script>
