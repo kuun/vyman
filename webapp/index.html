@@ -103,6 +103,10 @@
                 data: menus,
                 onSelect: onSelectMenu     
             });
+
+            $(window).resize(function(){
+                $('#mainPage').layout('resize');
+            })
         });
     </script>
 </body>
