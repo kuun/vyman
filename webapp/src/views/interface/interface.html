@@ -1,17 +1,4 @@
-<table id="interfaceGrid" style="width:100%;height:100%" sortName="name" sortOrder="asc" rownumbers="true"
-    pagination="true" fitColumns="true">
-    <!--     <thead>
-        <tr>
-            <th field="name" width="60" sortable="true">名称</th>
-            <th field="type" width="100" sortable="true">网卡类型</th>
-            <th field="mac" width="200" sortable="true">MAC</th>
-            <th field="linkStatus" width="80" align="right" sortable="true">连接状态</th>
-            <th field="disabled" width="80">是否启用</th>
-            <th field="description" width="200" align="left">备注</th>
-        </tr>
-    </thead> -->
-</table>
-
+<table id="interfaceGrid" style="width:100%;height:100%"></table>
 
 <script>
     $(function () {
@@ -54,9 +41,16 @@
         grid = $('#interfaceGrid').datagrid({
             toolbar: toollbar,
             columns: columns,
+            fitColumns: true,
             method: 'GET',
             url: '/api/interfaces',
-            loadMsg: '处理中，请等待...'
+            loadMsg: '处理中，请等待...',
+            remoteSort: false,
+            sortName: 'name',
+            sortOrder: 'asc',
+            pagination: true,
+            pageSize: 50,
+            pageList: [20,50,100]
         });
 
         grid.datagrid('load');
