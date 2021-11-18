@@ -1,49 +1,64 @@
-<table id="interfaceGrid"  style="width:100%;height:100%" sortName="name" sortOrder="asc"
-    rownumbers="true" pagination="true" fitColumns="true">
-    <thead>
+<table id="interfaceGrid" style="width:100%;height:100%" sortName="name" sortOrder="asc" rownumbers="true"
+    pagination="true" fitColumns="true">
+    <!--     <thead>
         <tr>
             <th field="name" width="60" sortable="true">名称</th>
             <th field="type" width="100" sortable="true">网卡类型</th>
             <th field="mac" width="200" sortable="true">MAC</th>
             <th field="linkStatus" width="80" align="right" sortable="true">连接状态</th>
-            <th field="enabled" width="80">是否启用</th>
-            <th field="description" width="200" align="center">备注</th>
+            <th field="disabled" width="80">是否启用</th>
+            <th field="description" width="200" align="left">备注</th>
         </tr>
-    </thead>
+    </thead> -->
 </table>
 
 
 <script>
-    $(function(){
+    $(function () {
         var grid;
-        var toollbar =  [{
-            text:'添加',
-            iconCls:'icon-add',
-            handler:function(){alert('add')}
-        },{
-            text:'修改',
-            iconCls:'icon-cut',
-            handler:function(){alert('cut')}
-        },{
-            text:'删除',
-            iconCls:'icon-save',
-            handler:function(){alert('save')}
+        var toollbar = [{
+            text: '<i class="fa fa-plus-square" aria-hidden="true"></i> 添加',
+            handler: function () { alert('add') }
         }, {
-            text:'刷新',
-            iconCls:'icon-reload',
-            handler:function(){
+            text: '<i class="fa fa-pencil-square" aria-hidden="true"></i> 修改',
+            handler: function () { alert('cut') }
+        }, {
+            text: '<i class="fa fa-trash-square" aria-hidden="true"></i> 删除',
+            handler: function () { alert('delete') }
+        }, {
+            text: '<i class="fa fa-refresh" aria-hidden="true"></i> 刷新',
+            handler: function () {
                 grid.datagrid('reload');
             }
         }];
 
+        var columns = [[
+            { field: 'name', title: '名称', width: 80, align: 'left', sortable: true },
+            { field: 'type', title: '类型', width: 100, align: 'left', sortable: true },
+            { field: 'mac', title: 'MAC', width: 200, align: 'left', sortable: true },
+            { field: 'linkStatus', title: '连接状态', width: 80, align: 'left', sortable: true },
+            {
+                field: 'disabled',
+                title: '是否启用',
+                width: 80,
+                align: 'center',
+                sortable: true,
+                formatter: function (value, row, index) {
+                    return value.enabled ? '否' : '是';
+                }
+            },
+            { field: 'description', title: '备注', width: 200, align: 'left' }
+        ]];
+
         grid = $('#interfaceGrid').datagrid({
             toolbar: toollbar,
+            columns: columns,
             method: 'GET',
             url: '/api/interfaces',
             loadMsg: '处理中，请等待...'
         });
-        
+
         grid.datagrid('load');
-        
+
     })
 </script>
