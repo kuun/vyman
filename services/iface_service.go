@@ -12,6 +12,7 @@ import (
 )
 
 type IfaceService interface {
+	GetAllIfaces() ([]*models.Iface, error)
 	GetIfaces(ifType string) ([]*models.Iface, error)
 	GetIface(ifType string, name string) (*models.Iface, error)
 }
@@ -33,6 +34,11 @@ func (service *ifaceService) GetIfaces(ifType string) ([]*models.Iface, error) {
 	default:
 		return make([]*models.Iface, 0), nil
 	}
+}
+
+func (service *ifaceService) GetAllIfaces() ([]*models.Iface, error) {
+	ifaces, err := service.getEthIfaces()
+	return ifaces, err
 }
 
 func (service *ifaceService) GetIface(ifType string, name string) (*models.Iface, error) {

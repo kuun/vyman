@@ -24,6 +24,7 @@ func InitRouters(r *gin.Engine) {
 	r.POST("/api/login", session.Login)
 	r.POST("/api/logout", session.Logout)
 
+	r.GET("/api/interfaces", handlers.GetAllIfaces)
 	r.GET("/api/interfaces/:ifaceType", handlers.GetIfaces)
 	r.GET("/api/interfaces/:ifaceType/:name", handlers.GetIface)
 
