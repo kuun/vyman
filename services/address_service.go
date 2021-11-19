@@ -1,12 +1,14 @@
 package services
 
 import (
-	"errors"
+	"encoding/json"
 	"fmt"
 
 	"github.com/kuun/slog"
 	"github.com/kuun/vyman/models"
 	"github.com/kuun/vyman/services/vyosclient"
+	"github.com/kuun/vyman/utils"
+	"github.com/pkg/errors"
 )
 
 var log = slog.GetLogger(addressService{})
@@ -15,7 +17,7 @@ type AddressService interface {
 	IsDHCP(ifaceType string, name string) (bool, error)
 	EnableDHCP(ifaceType string, name string) error
 	DisableDHCP(ifaceType string, name string) error
-	GetAddress(ifaceType string, name string) ([]*models.Address, error)
+	GetAddress(ifaceType string, name string) ([]models.Address, error)
 	AddAddress(ifaceType string, name string, addr *models.Address) error
 	DeleteAddress(ifaceType string, name string, addr *models.Address) error
 }
@@ -66,31 +68,26 @@ func (service *addressService) DisableDHCP(ifaceType string, name string) error 
 	return service.vyosClient.Configure(cmds)
 }
 
-func (service *addressService) GetAddress(ifaceType string, name string) ([]*models.Address, error) {
-	addrs := make([]*models.Address, 0)
-	path := fmt.Sprintf("interfaces %s %s address", ifaceType, name)
-	values, err := service.vyosClient.ReturnValues(path)
+func (service *addressService) GetAddress(ifaceType string, name string) ([]models.Address, error) {
+	output, err := utils.CmdRunOutput("ip", "-j", "address", "show", "dev", name)
 	if err != nil {
-		return addrs, err
+		return nil, err
 	}
-	for _, value := range values {
-		if value == "dhcp" {
-			return addrs[:0], nil
-		}
-		addr, err := models.ParseAddress(value)
-		if err != nil {
-			log.Errorf("failed to parse ip address, value: %s, error: %+v", value, err)
-		} else {
-			addrs = append(addrs, addr)
-		}
+	addrInfoWrapper := make([]models.AddrInfoWrapper, 0, 1)
+	if err = json.Unmarshal([]byte(output), &addrInfoWrapper); err != nil {
+		return nil, errors.Wrap(err, "")
 	}
-	return addrs, nil
+	if len(addrInfoWrapper) != 1 {
+		log.Errorf("invalid ip -j address show dev %s output, output: %s", name, output)
+		return nil, errors.New("invalid ip -j address show output")
+	}
+	return addrInfoWrapper[0].AddrInfos, nil
 }
 
 func (service *addressService) AddAddress(ifaceType string, name string, addr *models.Address) error {
 	path := fmt.Sprintf("interfaces %s %s address", ifaceType, name)
 	cmds := []*vyosclient.Command{
-		vyosclient.NewCommand("set", path, addr.String()),
+		vyosclient.NewCommand("set", path, addr.CIDR()),
 	}
 	return service.vyosClient.Configure(cmds)
 }
@@ -98,7 +95,7 @@ func (service *addressService) AddAddress(ifaceType string, name string, addr *m
 func (service *addressService) DeleteAddress(ifaceType string, name string, addr *models.Address) error {
 	path := fmt.Sprintf("interfaces %s %s address", ifaceType, name)
 	cmds := []*vyosclient.Command{
-		vyosclient.NewCommand("delete", path, addr.String()),
+		vyosclient.NewCommand("delete", path, addr.CIDR()),
 	}
 	return service.vyosClient.Configure(cmds)
 }

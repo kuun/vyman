@@ -10,7 +10,7 @@
             text: '<i class="fa fa-pencil-square" aria-hidden="true"></i> 修改',
             handler: function () { alert('cut') }
         }, {
-            text: '<i class="fa fa-trash-square" aria-hidden="true"></i> 删除',
+            text: '<i class="fa fa-trash" aria-hidden="true"></i> 删除',
             handler: function () { alert('delete') }
         }, {
             text: '<i class="fa fa-refresh" aria-hidden="true"></i> 刷新',
@@ -31,8 +31,8 @@
                 width: 80,
                 align: 'center',
                 sortable: true,
-                formatter: function (value, row, index) {
-                    return value.enabled ? '否' : '是';
+                formatter: function (disabled, row, index) {
+                    return disabled ? '否' : '是';
                 }
             },
             { field: 'description', title: '备注', width: 200, align: 'left' }
@@ -50,10 +50,8 @@
             sortOrder: 'asc',
             pagination: true,
             pageSize: 50,
-            pageList: [20,50,100]
+            pageList: [20, 50, 100]
         });
-
-        grid.datagrid('load');
 
     })
 </script>

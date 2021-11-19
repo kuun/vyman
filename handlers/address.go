@@ -71,9 +71,9 @@ func AddAddress(c *gin.Context) {
 	name := c.Param("name")
 	service := services.GetAddressService()
 
-	strAddr := c.Query("addr")
+	addr := &models.Address{}
+	err := c.BindJSON(addr)
 
-	addr, err := models.ParseAddress(strAddr)
 	if err != nil {
 		goto ERROR
 	}
@@ -83,7 +83,7 @@ func AddAddress(c *gin.Context) {
 	c.JSON(200, gin.H{"success": true})
 	return
 ERROR:
-	log.Errorf("failed to add address, type: %s, name: %s, addr: %s, err: %+v", ifaceType, name, strAddr, err)
+	log.Errorf("failed to add address, type: %s, name: %s, addr: %v, err: %+v", ifaceType, name, addr, err)
 	c.JSON(500, gin.H{"success": false, "error": err.Error()})
 }
 
@@ -92,9 +92,10 @@ func DeleteAddress(c *gin.Context) {
 	name := c.Param("name")
 	service := services.GetAddressService()
 
-	strAddr := c.Query("addr")
+	addr := &models.Address{}
+	err := c.BindJSON(addr)
 
-	addr, err := models.ParseAddress(strAddr)
+	// addr, err := models.ParseAddress(strAddr)
 	if err != nil {
 		goto ERROR
 	}
@@ -104,6 +105,6 @@ func DeleteAddress(c *gin.Context) {
 	c.JSON(200, gin.H{"success": true})
 	return
 ERROR:
-	log.Errorf("failed to delete address, type: %s, name: %s, addr: %s, err: %+v", ifaceType, name, strAddr, err)
+	log.Errorf("failed to delete address, type: %s, name: %s, addr: %v, err: %+v", ifaceType, name, addr, err)
 	c.JSON(500, gin.H{"success": false, "error": err.Error()})
 }

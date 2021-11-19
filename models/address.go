@@ -1,29 +1,22 @@
 package models
 
-import (
-	"fmt"
-	"net"
-
-	"github.com/pkg/errors"
-)
+import "fmt"
 
 type Address struct {
-	Addr string `json:"addr"`
-	Mask int    `json:"mask"`
+	Local             string `json:"local"`
+	PrefixLen         uint16 `json:"prefixlen"`
+	Dynamic           bool   `json:"dynamic"`
+	Family            string `json:"family"`
+	Broadcast         string `json:"broadcast"`
+	Scope             string `json:"scope"`
+	ValidLifeTime     uint64 `json:"valid_life_time"`
+	PreferredLifeTime uint64 `json:"preferred_life_time"`
 }
 
-func (addr *Address) String() string {
-	return fmt.Sprintf("%s/%d", addr.Addr, addr.Mask)
+type AddrInfoWrapper struct {
+	AddrInfos []Address `json:"addr_info"`
 }
 
-func ParseAddress(str string) (*Address, error) {
-	ip, ipnet, err := net.ParseCIDR(str)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-	addr := &Address{}
-	addr.Addr = ip.String()
-	ones, _ := ipnet.Mask.Size()
-	addr.Mask = ones
-	return addr, nil
+func (addr *Address) CIDR() string {
+	return fmt.Sprintf("%s/%d", addr.Local, addr.PrefixLen)
 }
