@@ -72,7 +72,7 @@ func AddAddress(c *gin.Context) {
 	service := services.GetAddressService()
 
 	addr := &models.Address{}
-	err := c.BindJSON(addr)
+	err := c.Bind(addr)
 
 	if err != nil {
 		goto ERROR
@@ -91,20 +91,27 @@ func DeleteAddress(c *gin.Context) {
 	ifaceType := c.Param("ifaceType")
 	name := c.Param("name")
 	service := services.GetAddressService()
+	code := 200
+	var message string
 
-	addr := &models.Address{}
-	err := c.BindJSON(addr)
+	addrs := make([]*models.Address, 0)
+	err := c.BindJSON(&addrs)
 
 	// addr, err := models.ParseAddress(strAddr)
-	if err != nil {
+	if err != nil || len(addrs) == 0 {
+		code = 400
+		message = "无效的客户端请求!"
 		goto ERROR
 	}
-	if err = service.DeleteAddress(ifaceType, name, addr); err != nil {
+	if err = service.DeleteAddress(ifaceType, name, addrs); err != nil {
+		code = 500
+		message = "删除IP失败"
 		goto ERROR
 	}
-	c.JSON(200, gin.H{"success": true})
+	message = "删除IP成功!"
+	c.JSON(code, gin.H{"success": true, "message": message})
 	return
 ERROR:
-	log.Errorf("failed to delete address, type: %s, name: %s, addr: %v, err: %+v", ifaceType, name, addr, err)
-	c.JSON(500, gin.H{"success": false, "error": err.Error()})
+	log.Errorf("failed to delete address, type: %s, name: %s, addrs: %v, err: %+v", ifaceType, name, addrs, err)
+	c.JSON(code, gin.H{"success": false, "message": message})
 }

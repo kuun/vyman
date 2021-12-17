@@ -96,6 +96,7 @@ func (client *vyosClient) Configure(cmds []*Command) (err error) {
 	if err != nil {
 		goto ERROR
 	}
+	log.Debugf("configure result: %#v", result)
 	if !result.Success {
 		err = errors.New(result.Error)
 		goto ERROR
@@ -219,8 +220,7 @@ ERROR:
 
 func (client *vyosClient) parseJsonResponse(httpRes *http.Response) (result *CmdResult, err error) {
 	var res CmdResult
-	var decoder *json.Decoder
-	decoder = json.NewDecoder(httpRes.Body)
+	decoder := json.NewDecoder(httpRes.Body)
 	if err = decoder.Decode(&res); err != nil {
 		return nil, errors.Wrap(err, "")
 	}

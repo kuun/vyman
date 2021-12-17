@@ -19,7 +19,7 @@ type AddressService interface {
 	DisableDHCP(ifaceType string, name string) error
 	GetAddress(ifaceType string, name string) ([]models.Address, error)
 	AddAddress(ifaceType string, name string, addr *models.Address) error
-	DeleteAddress(ifaceType string, name string, addr *models.Address) error
+	DeleteAddress(ifaceType string, name string, addrs []*models.Address) error
 }
 
 type addressService struct {
@@ -85,6 +85,7 @@ func (service *addressService) GetAddress(ifaceType string, name string) ([]mode
 }
 
 func (service *addressService) AddAddress(ifaceType string, name string, addr *models.Address) error {
+	log.Infof("try to add address: %#v, interface type: %s, interface: %s", addr, ifaceType, name)
 	path := fmt.Sprintf("interfaces %s %s address", ifaceType, name)
 	cmds := []*vyosclient.Command{
 		vyosclient.NewCommand("set", path, addr.CIDR()),
@@ -92,10 +93,11 @@ func (service *addressService) AddAddress(ifaceType string, name string, addr *m
 	return service.vyosClient.Configure(cmds)
 }
 
-func (service *addressService) DeleteAddress(ifaceType string, name string, addr *models.Address) error {
+func (service *addressService) DeleteAddress(ifaceType string, name string, addrs []*models.Address) error {
 	path := fmt.Sprintf("interfaces %s %s address", ifaceType, name)
-	cmds := []*vyosclient.Command{
-		vyosclient.NewCommand("delete", path, addr.CIDR()),
+	cmds := make([]*vyosclient.Command, 0, len(addrs))
+	for _, addr := range addrs {
+		cmds = append(cmds, vyosclient.NewCommand("delete", path, addr.CIDR()))
 	}
 	return service.vyosClient.Configure(cmds)
 }

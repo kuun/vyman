@@ -17,3 +17,11 @@ html, body {
     font-size: 20px;
     padding-left: 5px;
 }
+
+.formContainer {
+    padding: 30px 30px;
+}
+
+.formRow {
+    margin-bottom: 10px;
+}
