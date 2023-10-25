@@ -27,16 +27,19 @@ function login() {
 </script>
 
 <template>
-  <form id="login" @keyup.enter="login">
-    <h1>登录</h1>
-    <fieldset id="inputs">
-      <input v-model="username" type="text" placeholder="用户名" autofocus required>
-      <input v-model="password" type="password" placeholder="密码" required>
-    </fieldset>
-    <fieldset id="actions">
-      <input @click="login" type="button" value="登录">
-    </fieldset>
-  </form>
+  <div id="backgroud">
+    <form id="login" @keyup.enter="login">
+      <h1>登录</h1>
+      <fieldset id="inputs">
+        <input v-model="username" id="username" type="text" placeholder="用户名" autofocus required>
+        <input v-model="password" id="password" type="password" placeholder="密码" required>
+      </fieldset>
+      <fieldset id="actions">
+        <input id="submit" @click="login" type="button" value="登录">
+      </fieldset>
+    </form>
+  </div>
+
 </template>
 
 <style scoped>
@@ -45,8 +48,10 @@ html, body
   height: 100%;
 }
 
-body
+#backgroud
 {
+  height: 100%;
+  width: 100%;
   font: 12px 'Lucida Sans Unicode', 'Trebuchet MS', Arial, Helvetica;
   margin: 0;
   background-color: #d9dee2;
@@ -211,7 +216,7 @@ fieldset
 /*--------------------*/
 #actions
 {
-  margin: 10px auto 0 140px;
+  margin: 0 auto 0 115px;
 }
 
 #submit
