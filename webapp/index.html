@@ -1,115 +1,13 @@
 <!DOCTYPE html>
-<html>
-
-<head>
+<html lang="en">
+  <head>
     <meta charset="UTF-8">
-
-    <link rel="stylesheet" type="text/css" href="thirdpart/easyui-1.10.0/themes/material/easyui.css" />
-    <link rel="stylesheet" type="text/css" href="thirdpart/easyui-1.10.0/themes/icon.css" />
-    <link rel="stylesheet" type="text/css" href="thirdpart/easyui-1.10.0/themes/color.css" />
-    <link rel="stylesheet" type="text/css" href="thirdpart/font-awesome-4.7.0/css/font-awesome.min.css" />
-
-    <script type="text/javascript" src="thirdpart/jquery-3.5.1/jquery-3.5.1.min.js"></script>
-    <!-- <script type="text/javascript" src="thirdpart/easyui-1.10.0/jquery.min.js"></script> -->
-
-    <script type="text/javascript" src="thirdpart/easyui-1.10.0/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="thirdpart/easyui-1.10.0/locale/easyui-lang-zh_CN.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
-</head>
-
-<body>
-    <div id="mainPage" class="easyui-layout">
-        <div data-options="region:'north'" style="height:50px;">
-            <div class="productTitle">VyOS Firewall</div>
-        </div>
-        <div data-options="region:'south'" style="height:24px;">
-            Version: 1.0.0
-        </div>
-        <div data-options="region:'west'" style="width:230px;">
-            <div id="navMenu">
-            </div>
-        </div>
-        <div data-options="region:'center'" >
-            <div id="moduleContent" class="easyui-layout" data-options="fit: true" >
-                <div data-options="region:'north'" style="height:30px;">
-                    <div id="moduleTitle" class="moduleTitle"></div>
-                </div>
-                <div data-options="region:'center'" ></div>
-            </div>
-        </div>
-
-    </div>
-    <script type="text/javascript">
-    
-        $(function () {
-            var selectedMenu = null;
-
-            var menus = [{
-                id: 'interfaces',
-                text: '网口管理',
-                iconCls: 'fa fa-internet-explorer',
-                children: [{
-                    id: 'interfacesEthernet',
-                    text: '<i class="fa fa-angle-double-right" aria-hidden="true"></i> 网卡管理',
-                    href: '/views/interface/interface.html'
-                }, {
-                    id: 'address',
-                    text: '<i class="fa fa-angle-double-right" aria-hidden="true"></i> IP管理',
-                    href: '/views/interface/address.html'
-                }]
-            }, {
-                id: 'groups',
-                text: '组管理',
-                iconCls: 'fa fa-sitemap',
-                children: [{
-                    id: 'addressGroup',
-                    text: '地址组',
-                    iconCls: 'fa fa-cog'
-                }, {
-                    id: 'networkGroup',
-                    text: '网络组',
-                    iconCls: 'fa fa-cog'
-                }, {
-                    id: 'portGroup',
-                    text: '端口组',
-                    iconCls: 'fa fa-cog'
-                }]
-            }, {
-                id: 'ruleSets',
-                text: '规则集管理',
-                iconCls: 'fa fa-list-ul'
-            }, {
-                id: 'zone',
-                text: '安全域',
-                iconCls: 'fa fa-th-large'
-            }, {
-                id: 'log',
-                text: '审计日志',
-                iconCls: 'fa fa-bar-chart'
-            }];
-
-            function onSelectMenu(item) {
-                var moduleContent = $('#moduleContent');
-                moduleContent.layout('remove', 'center');
-                moduleContent.layout('add', {
-                    region: 'center',
-                    href: item.href,
-                })
-                $('#moduleTitle').html(item.text)
-            }
-
-            $('#navMenu').sidemenu({
-                width: 'auto',
-                data: menus,
-                onSelect: onSelectMenu     
-            });
-
-            $(window).resize(function(){
-                $('#mainPage').layout('resize');
-            })
-        });
-    </script>
-</body>
-
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dataDISK</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>

@@ -1,0 +1,16 @@
+/*@import './base.css';*/
+
+
+
+html, body, #app {
+  /*max-width: 1280px;*/
+  margin: 0px;
+  /*padding: 2rem;*/
+
+  font-weight: normal;
+}
+
+html, body, body>div, body>div>div {
+  height: 100%;
+  width: 100%;
+}
