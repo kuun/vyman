@@ -36,7 +36,7 @@ func authFilter() gin.HandlerFunc {
 		if strings.HasSuffix(uri, ".png") {
 			return
 		}
-		if uri == "/login.html" {
+		if uri == "/ui/login" {
 			return
 		}
 		if uri == "/api/login" {
@@ -47,7 +47,7 @@ func authFilter() gin.HandlerFunc {
 			log.Errorf("can't create session, error: %v", err)
 		}
 		if session.IsNew {
-			c.Redirect(302, "/login.html")
+			c.Redirect(302, "/ui/login")
 			c.Abort()
 		}
 	}
@@ -55,9 +55,15 @@ func authFilter() gin.HandlerFunc {
 }
 
 func Login(c *gin.Context) {
-
-	username := c.PostForm("username")
-	password := c.PostForm("password")
+	reqData := make(map[string]interface{})
+	err := c.BindJSON(&reqData)
+	if err != nil {
+		log.Errorf("can't bind json, error: %s", err)
+		c.JSON(400, gin.H{"success": false})
+		return
+	}
+	username := reqData["username"].(string)
+	password := reqData["password"].(string)
 
 	session, _ := store.Get(c.Request, sessionName)
 	if username == os.Getenv("VYMAN_USER") && password == os.Getenv("VYMAN_PASSWORD") {

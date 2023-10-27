@@ -13,13 +13,14 @@ var log = slog.GetLogger(_logger{})
 
 // InitRouters setups routers
 func InitRouters(r *gin.Engine) {
-	r.Static("/thirdpart", "webapp/thirdpart")
-	r.Static("/css", "webapp/css")
-	r.Static("/dist", "webapp/dist")
-	r.Static("/views", "webapp/src/views")
+	r.Use(disableCache())
+
+	r.Static("/assets", "webapp/assets")
 	r.StaticFile("/", "webapp/index.html")
 	r.StaticFile("/index.html", "webapp/index.html")
-	r.StaticFile("/login.html", "webapp/login.html")
+	r.GET("/ui/*filepath", func(c *gin.Context) {
+		c.File("webapp/index.html")
+	})
 
 	r.POST("/api/login", session.Login)
 	r.POST("/api/logout", session.Logout)
@@ -35,4 +36,13 @@ func InitRouters(r *gin.Engine) {
 	r.POST("/api/interfaces/:ifaceType/:name/address", handlers.AddAddress)
 	r.DELETE("/api/interfaces/:ifaceType/:name/address", handlers.DeleteAddress)
 
+}
+
+func disableCache() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		c.Writer.Header().Set("Pragma", "no-cache")
+		c.Writer.Header().Set("Expires", "0")
+		c.Next()
+	}
 }

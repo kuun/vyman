@@ -11,9 +11,12 @@ const router = createRouter({
       component: HomeView,
       children: [
         {
-            path: 'file',
-            name: 'file',
-            component: () => import('../views/FileView.vue')
+          path: 'ui/interface/ethernet',
+          name: 'ethernet',
+          component: () => import("../views/InterfaceView.vue"),
+          props: {
+            ifaceType: 'ethernet'
+          }
         }
       ]
     },

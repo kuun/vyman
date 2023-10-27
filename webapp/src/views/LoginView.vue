@@ -1,20 +1,19 @@
 <script setup>
 import { ref } from 'vue'
 import axios  from 'axios'
+import router from "../router";
 
 const username = ref('')
 const password = ref('')
 
 function login() {
-  console.log('username: ', username.value, ', password: ', password.value)
   axios.post('/api/login', {
     username: username.value,
     password: password.value
   }).then(function (response) {
-    console.log(response)
-    if (response.data.code == 0) {
+    if (response.data.success) {
       console.log('登录成功')
-      window.location.href = '/'
+      router.push('/')
     } else {
       console.log('登录失败')
       alert("登录失败: 用户名或密码错误！")
