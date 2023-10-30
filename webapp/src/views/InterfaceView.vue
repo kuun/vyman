@@ -2,8 +2,6 @@
 import {DataGrid, Layout, LayoutPanel, DataList} from "v3-easyui";
 import {onMounted, ref} from "vue";
 import axios from "axios";
-import _ from "lodash";
-
 
 const ifaceList = ref([])
 const ipAddrList = ref([])
@@ -19,25 +17,27 @@ onMounted(() => {
   axios.get('/api/interfaces/' + props.ifaceType)
       .then((resp) => {
         console.log('interfaces: ', resp.data)
-        _.map(resp.data, (iface) => {
-          ifaceList.value.push({
-            text: iface.name,
-            value: iface
-          })
-        })
+        ifaceList.value = resp.data
       })
       .catch((resp) => {
         alert('获取网卡列表失败.')
       })
 })
+
 </script>
 
 <template>
   <Layout style="width:100%;height:100%;">
-    <LayoutPanel region="west" style="width:150px;">
-      <div class="title">
-        <DataList :data="ifaceList" onSelectionChange="onSelectionChange"/>
-      </div>
+    <LayoutPanel region="west" style="width:150px; height: 100%">
+      <Panel title="网卡列表" style="height:100%; width: 100%">
+        <DataList :data="ifaceList" selectionMode="single" @onSelectionChange="onSelectionChange">
+          <template v-slot="scope">
+            <div class="ifaceListItem">
+              {{scope.row.name}}
+            </div>
+          </template>
+        </DataList>
+      </Panel>
     </LayoutPanel>
     <LayoutPanel region="center" style="height:100%">
       <DataGrid :data="ipAddrList" selection-mode="multiple" style="height: 100%">
@@ -50,4 +50,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.ifaceListItem {
+  font-size: 20px;
+  padding: 5px;
+}
 </style>
