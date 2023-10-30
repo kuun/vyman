@@ -40,10 +40,17 @@ onMounted(() => {
       </Panel>
     </LayoutPanel>
     <LayoutPanel region="center" style="height:100%">
-      <DataGrid :data="ipAddrList" selection-mode="multiple" style="height: 100%">
-        <GridColumn field="ip" title="IP"></GridColumn>
-        <GridColumn field="mask" title="掩码" width="100"></GridColumn>
-      </DataGrid>
+      <Tabs style="height:100%">
+        <TabPanel :title="'IP管理'">
+          <DataGrid :data="ipAddrList" selection-mode="multiple" style="height: 100%">
+            <GridColumn field="ip" title="IP"></GridColumn>
+            <GridColumn field="mask" title="掩码" width="100"></GridColumn>
+          </DataGrid>
+        </TabPanel>
+        <TabPanel :title="'网卡设置'">
+          <p>Tab Panel2</p>
+        </TabPanel>
+      </Tabs>
     </LayoutPanel>
   </Layout>
 
