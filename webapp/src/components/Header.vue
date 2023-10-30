@@ -3,13 +3,17 @@
 </script>
 
 <template>
-  <div>
-    <img class="product-title" src="../assets/img/netguard.png">
-  </div>
+  <Panel :border="false">
+    <template v-slot:header>
+      <div>
+        <img class="product-title" src="../assets/img/netguard.png">
+      </div>
+    </template>
+  </Panel>
 </template>
 
 <style scoped>
 .product-title {
-  height: 52px;
+  height: 43px;
 }
 </style>
