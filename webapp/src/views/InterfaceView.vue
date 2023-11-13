@@ -1,10 +1,10 @@
 <script setup>
-import {DataGrid, Layout, LayoutPanel, DataList} from "v3-easyui";
+import {Layout, LayoutPanel, DataList} from "v3-easyui";
 import {onMounted, ref} from "vue";
 import axios from "axios";
 
 const ifaceList = ref([])
-const ipAddrList = ref([])
+const selectedIfaceName = ref('')
 
 const props = defineProps({
   ifaceType: {
@@ -24,6 +24,11 @@ onMounted(() => {
       })
 })
 
+const onSelectionChange = event => {
+  console.log('selection change: ', event)
+  selectedIfaceName.value = event.data.name
+};
+
 </script>
 
 <template>
@@ -42,10 +47,7 @@ onMounted(() => {
     <LayoutPanel region="center" style="height:100%">
       <Tabs style="height:100%">
         <TabPanel :title="'IP管理'">
-          <DataGrid :data="ipAddrList" selection-mode="multiple" style="height: 100%">
-            <GridColumn field="ip" title="IP"></GridColumn>
-            <GridColumn field="mask" title="掩码" width="100"></GridColumn>
-          </DataGrid>
+          <IpManager :ifaceName="selectedIfaceName"></IpManager>
         </TabPanel>
         <TabPanel :title="'网卡设置'">
           <p>Tab Panel2</p>
