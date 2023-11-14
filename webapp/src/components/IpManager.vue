@@ -78,6 +78,12 @@ const loadIp = (iface) => {
       </GridColumn>
       <GridColumn field="local" title="IP"></GridColumn>
       <GridColumn field="prefixlen" title="掩码" width="100"></GridColumn>
+      <GridColumn field="broadcast" title="广播地址" width="200"></GridColumn>
+      <GridColumn field="dynamic" title="动态IP" width="100">
+        <template v-slot:body="scope">
+          <div>{{scope.row.dynamic ? '是' : '否'}}</div>
+        </template>
+      </GridColumn>
     </DataGrid>
   </Panel>
 </template>
