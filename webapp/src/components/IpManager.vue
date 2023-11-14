@@ -31,18 +31,31 @@ const onCheckedChange = (checked) => {
 
 
 watch(() => ifaceStore.selectedIface, (newVal, oldVal) => {
-  console.log('selected iface changed: ', newVal, oldVal)
+  console.log('selected iface changed: ', newVal, oldVal);
   if (newVal !== null) {
-    axios.get(`/api/interfaces/${newVal.type}/${newVal.name}/address`)
-        .then((resp) => {
-          console.log('ip list: ', resp.data)
-          ipAddrList.value = resp.data
-        })
-        .catch((resp) => {
-          alert('获取IP列表失败.')
-        })
+    loadIp(newVal);
   }
 })
+
+const refreshIp = () => {
+  loadIp(ifaceStore.selectedIface);
+};
+
+const loadIp = (iface) => {
+  if (!iface.name) {
+    alert('请选择网卡');
+    return;
+  }
+  axios.get(`/api/interfaces/${iface.type}/${iface.name}/address`)
+      .then((resp) => {
+        console.log('ip list: ', resp.data)
+        ipAddrList.value = resp.data
+      })
+      .catch((resp) => {
+        alert('获取IP列表失败.')
+      })
+}
+
 
 </script>
 
@@ -52,7 +65,7 @@ watch(() => ifaceStore.selectedIface, (newVal, oldVal) => {
       <LinkButton iconCls="icon-add" style="width:80px" :plain="true">添加</LinkButton>
       <LinkButton iconCls="icon-edit" style="width:80px" :plain="true">修改</LinkButton>
       <LinkButton iconCls="icon-remove" style="width:80px" :plain="true">删除</LinkButton>
-      <LinkButton iconCls="icon-reload" style="width:80px" :plain="true">刷新</LinkButton>
+      <LinkButton iconCls="icon-reload" style="width:80px" :plain="true" @click="refreshIp">刷新</LinkButton>
     </div>
     <DataGrid :data="ipAddrList" style="height: 100%">
       <GridColumn field="selected" :width="50" align="center">
