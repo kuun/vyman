@@ -1,12 +1,34 @@
 <script setup>
 
-import {ref, watch} from "vue";
-import {DataGrid, GridColumn, LinkButton, Panel} from "v3-easyui";
+import {computed, nextTick, ref, watch} from "vue";
+import {CheckBox, DataGrid, GridColumn, LinkButton, Panel} from "v3-easyui";
 import axios from "axios";
 import {useIfaceStore} from "../stores/iface";
 
 const ipAddrList = ref([]);
+const allChecked = ref(false);
 const ifaceStore = useIfaceStore();
+
+// 实现checkbox选中
+const rowClicked = ref(false);
+const checkedRows = computed(() => {
+  return ipAddrList.value.filter(row => row.selected);
+});
+const onAllCheckedChange = (checked) => {
+  if (rowClicked.value) {
+    return;
+  }
+  ipAddrList.value.map(row => {
+    row.selected = checked;
+  });
+};
+
+const onCheckedChange = (checked) => {
+  allChecked.value = checkedRows.value.length === ipAddrList.value.length;
+  rowClicked.value = true;
+  nextTick(() => (rowClicked.value = false));
+}
+
 
 watch(() => ifaceStore.selectedIface, (newVal, oldVal) => {
   console.log('selected iface changed: ', newVal, oldVal)
@@ -21,6 +43,7 @@ watch(() => ifaceStore.selectedIface, (newVal, oldVal) => {
         })
   }
 })
+
 </script>
 
 <template>
@@ -31,7 +54,15 @@ watch(() => ifaceStore.selectedIface, (newVal, oldVal) => {
       <LinkButton iconCls="icon-remove" style="width:80px" :plain="true">删除</LinkButton>
       <LinkButton iconCls="icon-reload" style="width:80px" :plain="true">刷新</LinkButton>
     </div>
-    <DataGrid :data="ipAddrList" selection-mode="multiple" style="height: 100%">
+    <DataGrid :data="ipAddrList" style="height: 100%">
+      <GridColumn field="selected" :width="50" align="center">
+        <template v-slot:header="scope">
+          <CheckBox v-model="allChecked" @checkedChange="onAllCheckedChange($event)"></CheckBox>
+        </template>
+        <template v-slot:body="scope" @checkedChange="onCheckedChange($event)">
+          <CheckBox v-model="scope.row.selected" @checkedChange="onCheckedChange($event)"></CheckBox>
+        </template>
+      </GridColumn>
       <GridColumn field="local" title="IP"></GridColumn>
       <GridColumn field="prefixlen" title="掩码" width="100"></GridColumn>
     </DataGrid>
