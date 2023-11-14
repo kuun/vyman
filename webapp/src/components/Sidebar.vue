@@ -44,7 +44,7 @@ function selectMenu(event) {
 
     <SideMenu style="width: 100%;"
               :data="menus"
-              @selectionChange="selectMenu">
+              @selectionChange="selectMenu" :border="false">
 
     </SideMenu>
 

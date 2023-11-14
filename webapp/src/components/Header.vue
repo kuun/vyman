@@ -1,5 +1,5 @@
 <script setup>
-
+import {Panel} from "v3-easyui";
 </script>
 
 <template>
@@ -14,6 +14,6 @@
 
 <style scoped>
 .product-title {
-  height: 43px;
+  height: 45px;
 }
 </style>
