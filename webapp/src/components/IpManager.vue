@@ -16,6 +16,7 @@ const formRules = ref({
 });
 const dlg = ref(null);
 const errors = ref({});
+let oldIp = ref({});
 
 // 实现checkbox选中
 const rowClicked = ref(false);
@@ -65,6 +66,10 @@ const loadIp = (iface) => {
 }
 
 const addIp = () => {
+  if (!ifaceStore.selectedIface.name) {
+    alert('请选择网卡');
+    return;
+  }
   dlgTitle.value = '添加';
   editingIp.value = {
     local: '',
@@ -74,15 +79,70 @@ const addIp = () => {
 };
 
 const modifyIp = () => {
-
+  console.log('modify ip: ', checkedRows.value);
+  if (checkedRows.value.length !== 1) {
+    alert('请选择一条记录修改');
+    return
+  }
+  if (checkedRows.value[0].dynamic) {
+    alert('动态IP不能修改');
+    return
+  }
+  dlgTitle.value = '修改';
+  oldIp = checkedRows.value[0]
+  editingIp.value = {
+    local: checkedRows.value[0].local,
+    prefixlen: checkedRows.value[0].prefixlen,
+  }
+  dlg.value.open();
 };
 
 const deleteIp = () => {
-
+  if (checkedRows.value.length < 1) {
+    alert('至少选择一条记录删除');
+    return
+  }
+  let iface = ifaceStore.selectedIface;
+  axios.delete(`/api/interfaces/${iface.type}/${iface.name}/address`, {
+    data: checkedRows.value
+  }).then((resp) => {
+    if (resp.data.success) {
+      alert('删除IP成功.')
+      refreshIp();
+    } else {
+      alert('删除IP失败.')
+    }
+  }).catch((resp) => {
+    alert('删除IP失败.')
+  })
 };
 
 const saveIp = () => {
-
+  let iface = ifaceStore.selectedIface;
+  axios({
+    method: 'post',
+    url: `/api/interfaces/${iface.type}/${iface.name}/address`,
+    data: editingIp.value
+  }).then((resp) => {
+    if (resp.data.success) {
+      if (dlgTitle.value === '修改') {
+        axios.delete(`/api/interfaces/${iface.type}/${iface.name}/address`, {
+          data: [oldIp]
+        }).then((resp) => {
+          alert('修改IP成功.')
+          refreshIp();
+        })
+      } else {
+        alert('添加IP成功.')
+        refreshIp();
+      }
+      close();
+    } else {
+      alert('添加IP失败.')
+    }
+  }).catch((resp) => {
+    alert('添加IP失败.')
+  })
 };
 
 const close = () => {
@@ -105,7 +165,7 @@ const getError = (name) => {
       <LinkButton iconCls="icon-remove" style="width:80px" :plain="true" @click="deleteIp">删除</LinkButton>
       <LinkButton iconCls="icon-reload" style="width:80px" :plain="true" @click="refreshIp">刷新</LinkButton>
     </div>
-    <Dialog ref="dlg" bodyCls="f-column" :title="dlgTitle" :modal="true" closed :dialogStyle="{height:'250px', width:'350px'}">
+    <Dialog ref="dlg" bodyCls="f-column" :title="dlgTitle" :draggable="true" :modal="true" closed :dialogStyle="{height:'250px', width:'350px'}">
       <div class="f-full" style="overflow:auto">
         <Form ref="form" :model="deleteIp" :rules="formRules" @validate="errors=$event" style="padding:20px 40px">
           <div>
