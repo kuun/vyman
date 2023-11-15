@@ -1,13 +1,21 @@
 <script setup>
 
 import {computed, nextTick, ref, watch} from "vue";
-import {CheckBox, DataGrid, GridColumn, LinkButton, Panel} from "v3-easyui";
+import {CheckBox, DataGrid, Dialog, Form, GridColumn, LinkButton, Panel, TextBox} from "v3-easyui";
 import axios from "axios";
 import {useIfaceStore} from "../stores/iface";
 
+const ifaceStore = useIfaceStore();
 const ipAddrList = ref([]);
 const allChecked = ref(false);
-const ifaceStore = useIfaceStore();
+const editingIp = ref({});
+const dlgTitle = ref("");
+const formRules = ref({
+  local: 'required',
+  prefixlen: 'required'
+});
+const dlg = ref(null);
+const errors = ref({});
 
 // 实现checkbox选中
 const rowClicked = ref(false);
@@ -56,17 +64,67 @@ const loadIp = (iface) => {
       })
 }
 
+const addIp = () => {
+  dlgTitle.value = '添加';
+  editingIp.value = {
+    local: '',
+    prefixlen: 24,
+  }
+  dlg.value.open();
+};
+
+const modifyIp = () => {
+
+};
+
+const deleteIp = () => {
+
+};
+
+const saveIp = () => {
+
+};
+
+const close = () => {
+  dlg.value.close();
+}
+
+const getError = (name) => {
+  return errors.value[name] && errors.value[name].length
+      ? errors.value[name][0]
+      : null;
+};
 
 </script>
 
 <template>
   <Panel :border="false">
     <div class="dialog-toolbar">
-      <LinkButton iconCls="icon-add" style="width:80px" :plain="true">添加</LinkButton>
-      <LinkButton iconCls="icon-edit" style="width:80px" :plain="true">修改</LinkButton>
-      <LinkButton iconCls="icon-remove" style="width:80px" :plain="true">删除</LinkButton>
+      <LinkButton iconCls="icon-add" style="width:80px" :plain="true" @click="addIp">添加</LinkButton>
+      <LinkButton iconCls="icon-edit" style="width:80px" :plain="true" @click="modifyIp">修改</LinkButton>
+      <LinkButton iconCls="icon-remove" style="width:80px" :plain="true" @click="deleteIp">删除</LinkButton>
       <LinkButton iconCls="icon-reload" style="width:80px" :plain="true" @click="refreshIp">刷新</LinkButton>
     </div>
+    <Dialog ref="dlg" bodyCls="f-column" :title="dlgTitle" :modal="true" closed :dialogStyle="{height:'250px', width:'350px'}">
+      <div class="f-full" style="overflow:auto">
+        <Form ref="form" :model="deleteIp" :rules="formRules" @validate="errors=$event" style="padding:20px 40px">
+          <div>
+            <Label for="itemid">IP:</Label>
+            <TextBox name="local" v-model="editingIp.local"></TextBox>
+            <div class="error">{{getError('local')}}</div>
+          </div>
+          <div>
+            <Label for="name">掩码:</Label>
+            <TextBox name="prefixlen" v-model="editingIp.prefixlen"></TextBox>
+            <div class="error">{{getError('prefixlen')}}</div>
+          </div>
+        </Form>
+      </div>
+      <div class="dialog-button f-noshrink">
+        <LinkButton @click="saveIp" style="width: 80px">保存</LinkButton>
+        <LinkButton @click="close" style="width: 80px">取消</LinkButton>
+      </div>
+    </Dialog>
     <DataGrid :data="ipAddrList" style="height: 100%">
       <GridColumn field="selected" :width="50" align="center">
         <template v-slot:header="scope">
@@ -89,5 +147,10 @@ const loadIp = (iface) => {
 </template>
 
 <style scoped>
-
+.error {
+  color: red;
+  font-size: 12px;
+  margin: 4px 0;
+  margin-left: 80px;
+}
 </style>

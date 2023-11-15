@@ -10,7 +10,7 @@ html, body, #app {
   font-weight: normal;
 }
 
-html, body, body>div, body>div>div {
+html, body, #app, #app>div {
   height: 100%;
   width: 100%;
 }
