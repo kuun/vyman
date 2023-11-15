@@ -17,6 +17,10 @@ const router = createRouter({
           props: {
             ifaceType: 'ethernet'
           }
+        }, {
+          path: 'ui/vpn/l2tp',
+          name: 'l2tp',
+          component: () => import("../views/L2TPView.vue"),
         }
       ]
     },

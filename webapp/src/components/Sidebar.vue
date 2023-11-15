@@ -29,6 +29,26 @@ const menus = ref([
       text: 'IPv6地址组',
       path: '/ui/group/ipv6-group'
     }]
+  }, {
+    text: "VPN",
+    iconCls: 'icon-more',
+    children: [
+      {
+        text: 'IPSec',
+        path: '/ui/vpn/ipsec'
+      }, {
+        text: 'L2TP',
+        path: '/ui/vpn/l2tp'
+      }, {
+        text: 'PPTP-Server',
+        path: '/ui/vpn/pptp-server'
+      }, {
+        text: 'OpenConnect',
+        path: '/ui/vpn/openconnect'
+      }, {
+        text: 'SSTP',
+        path: '/ui/vpn/sstp'
+    }]
   }
 ])
 
