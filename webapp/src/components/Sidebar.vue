@@ -52,11 +52,11 @@ const menus = ref([
   }
 ])
 
-function selectMenu(event) {
+const selectMenu = (event) => {
   if (event.path !== undefined && event.path !== '') {
     router.push(event.path)
   }
-}
+};
 
 </script>
 
@@ -64,8 +64,7 @@ function selectMenu(event) {
 
     <SideMenu style="width: 100%;"
               :data="menus"
-              @selectionChange="selectMenu" :border="false">
-
+              @itemClick="selectMenu" :border="false">
     </SideMenu>
 
 </template>
