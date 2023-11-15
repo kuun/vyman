@@ -1,27 +1,27 @@
 <script setup>
 import {ref} from "vue";
-import {SideMenu, MenuItem, SubMenu} from "v3-easyui";
+import {SideMenu} from "v3-easyui";
 import router from "../router";
 
 const menus = ref([
   {
     text: "网口管理",
     state: 'open',
-    iconCls: 'icon-more',
+    iconCls: 'fa fa-ethernet',
     children: [{
       text: 'IP管理',
       path: '/ui/interface/ethernet'
     }]
   }, {
     text: '路由设置',
-    iconCls: 'icon-more',
+    iconCls: 'fa fa-network-wired',
     children: [{
       text: '静态路由',
       path: '/ui/router/static'
     }]
   }, {
     text: "对象组管理",
-    iconCls: 'icon-more',
+    iconCls: 'fa fa-object-group',
     children: [{
       text: 'IPv4地址组',
       path: '/ui/group/ipv4-group'
@@ -31,7 +31,7 @@ const menus = ref([
     }]
   }, {
     text: "VPN",
-    iconCls: 'icon-more',
+    iconCls: 'fa fa-globe',
     children: [
       {
         text: 'IPSec',
@@ -61,12 +61,10 @@ const selectMenu = (event) => {
 </script>
 
 <template>
-
-    <SideMenu style="width: 100%;"
-              :data="menus"
-              @itemClick="selectMenu" :border="false">
-    </SideMenu>
-
+  <SideMenu style="width: 100%;"
+            :data="menus"
+            @itemClick="selectMenu" :border="false">
+  </SideMenu>
 </template>
 
 <style scoped>

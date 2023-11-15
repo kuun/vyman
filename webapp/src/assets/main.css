@@ -1,6 +1,4 @@
-/*@import './base.css';*/
-
-
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 html, body, #app {
   /*max-width: 1280px;*/
