@@ -40,7 +40,6 @@ const onCheckedChange = (checked) => {
 
 
 watch(() => ifaceStore.selectedIface, (newVal, oldVal) => {
-  console.log('selected iface changed: ', newVal, oldVal);
   if (newVal !== null) {
     loadIp(newVal);
   }
@@ -57,7 +56,6 @@ const loadIp = (iface) => {
   }
   axios.get(`/api/interfaces/${iface.type}/${iface.name}/address`)
       .then((resp) => {
-        console.log('ip list: ', resp.data)
         ipAddrList.value = resp.data
       })
       .catch((resp) => {
@@ -79,7 +77,6 @@ const addIp = () => {
 };
 
 const modifyIp = () => {
-  console.log('modify ip: ', checkedRows.value);
   if (checkedRows.value.length !== 1) {
     alert('请选择一条记录修改');
     return
@@ -96,7 +93,6 @@ const modifyIp = () => {
   }
   dlg.value.open();
 };
-
 const deleteIp = () => {
   if (checkedRows.value.length < 1) {
     alert('至少选择一条记录删除');
@@ -117,32 +113,39 @@ const deleteIp = () => {
   })
 };
 
+const form = ref(null);
 const saveIp = () => {
   let iface = ifaceStore.selectedIface;
-  axios({
-    method: 'post',
-    url: `/api/interfaces/${iface.type}/${iface.name}/address`,
-    data: editingIp.value
-  }).then((resp) => {
-    if (resp.data.success) {
-      if (dlgTitle.value === '修改') {
-        axios.delete(`/api/interfaces/${iface.type}/${iface.name}/address`, {
-          data: [oldIp]
-        }).then((resp) => {
-          alert('修改IP成功.')
-          refreshIp();
-        })
-      } else {
-        alert('添加IP成功.')
-        refreshIp();
-      }
-      close();
+  form.value.validate((valid) => {
+    if (valid != null) {
+      alert("请输入必填项")
     } else {
-      alert('添加IP失败.')
+      axios({
+        method: 'post',
+        url: `/api/interfaces/${iface.type}/${iface.name}/address`,
+        data: editingIp.value
+      }).then((resp) => {
+        if (resp.data.success) {
+          if (dlgTitle.value === '修改') {
+            axios.delete(`/api/interfaces/${iface.type}/${iface.name}/address`, {
+              data: [oldIp]
+            }).then((resp) => {
+              alert('修改IP成功.')
+              refreshIp();
+            })
+          } else {
+            alert('添加IP成功.')
+            refreshIp();
+          }
+          close();
+        } else {
+          alert('添加IP失败.')
+        }
+      }).catch((resp) => {
+        alert('添加IP失败.')
+      })
     }
-  }).catch((resp) => {
-    alert('添加IP失败.')
-  })
+  });
 };
 
 const close = () => {
@@ -151,7 +154,7 @@ const close = () => {
 
 const getError = (name) => {
   return errors.value[name] && errors.value[name].length
-      ? errors.value[name][0]
+      ? '这是必填项'
       : null;
 };
 
@@ -167,14 +170,14 @@ const getError = (name) => {
     </div>
     <Dialog ref="dlg" bodyCls="f-column" :title="dlgTitle" :draggable="true" :modal="true" closed :dialogStyle="{height:'250px', width:'350px'}">
       <div class="f-full" style="overflow:auto">
-        <Form ref="form" :model="deleteIp" :rules="formRules" @validate="errors=$event" style="padding:20px 40px">
+        <Form ref="form" :model="editingIp" :rules="formRules" @validate="errors=$event" style="padding:20px 40px">
           <div>
-            <Label for="itemid">IP:</Label>
+            <Label for="local">IP:</Label>
             <TextBox name="local" v-model="editingIp.local"></TextBox>
             <div class="error">{{getError('local')}}</div>
           </div>
           <div>
-            <Label for="name">掩码:</Label>
+            <Label for="prefixlen">掩码:</Label>
             <TextBox name="prefixlen" v-model="editingIp.prefixlen"></TextBox>
             <div class="error">{{getError('prefixlen')}}</div>
           </div>

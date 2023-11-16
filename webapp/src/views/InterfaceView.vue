@@ -18,7 +18,6 @@ const props = defineProps({
 onMounted(() => {
   axios.get('/api/interfaces/' + props.ifaceType)
       .then((resp) => {
-        console.log('interfaces: ', resp.data)
         ifaceList.value = resp.data
       })
       .catch((resp) => {
@@ -27,7 +26,6 @@ onMounted(() => {
 })
 
 const onSelectionChange = event => {
-  console.log('selection change: ', event)
   ifaceStore.setSelectedIface(event)
 };
 
