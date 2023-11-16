@@ -21,6 +21,10 @@ const router = createRouter({
           path: 'ui/vpn/l2tp',
           name: 'l2tp',
           component: () => import("../views/L2TPView.vue"),
+        }, {
+          path: 'ui/group/ipv4-group',
+          name: 'ipv4-group',
+          component: () => import("../views/AddressGroupView.vue"),
         }
       ]
     },
