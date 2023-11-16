@@ -1,5 +1,9 @@
 <script setup>
 import {RouterView} from 'vue-router'
+
+//弹窗的确定和取消按钮
+window.$messager.ok = "确定"
+window.$messager.cancel = "取消"
 </script>
 
 <template>
