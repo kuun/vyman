@@ -1,7 +1,10 @@
 <script setup>
-import {LinkButton, Panel} from "v3-easyui";
+import {LinkButton, MenuItem, Panel, SplitButton} from "v3-easyui";
 import axios from "axios";
 import alert from "../utils/alert";
+import {onMounted, ref} from "vue";
+
+const user = ref("")
 
 const logout = () => {
   alert.alertConfirm("退出登录", "确定退出登录吗?", r => {
@@ -23,6 +26,16 @@ const save = () => {
   )
 }
 
+onMounted(() => {
+  axios.get("/api/login/user").then(resp => {
+    if (resp.data.success) {
+      user.value = resp.data.user
+    } else {
+      window.location.href = "/ui/login";
+    }
+  })
+})
+
 </script>
 
 <template>
@@ -32,6 +45,7 @@ const save = () => {
         <img class="product-title" src="../assets/img/netguard.png">
       </div>
       <div class="right">
+        <LinkButton :text="user" :plain="true" iconCls="icon-man"></LinkButton>
         <LinkButton iconCls="icon-save" v-Tooltip="{content:'保存'}" :plain="true" @click="save"></LinkButton>
         <LinkButton v-Tooltip="{content:'退出登录'}" :plain="true" @click="logout"><i class="fa fa-right-from-bracket"
                                                                                       style="color: #3b64ab;"></i>

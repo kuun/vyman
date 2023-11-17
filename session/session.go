@@ -92,3 +92,13 @@ func Logout(c *gin.Context) {
 	session.Save(c.Request, c.Writer)
 	c.JSON(200, gin.H{"success": true})
 }
+func GetLoginUser(c *gin.Context) {
+	session, err := store.Get(c.Request, sessionName)
+	if err != nil {
+		log.Errorf("can't create session, error: %v", err)
+		c.JSON(500, gin.H{"success": false})
+		return
+	}
+	username := session.Values["username"]
+	c.JSON(200, gin.H{"success": true, "user": username})
+}
