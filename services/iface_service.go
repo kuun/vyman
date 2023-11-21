@@ -128,7 +128,14 @@ func (service *ifaceService) getMac(name string) (string, error) {
 }
 
 func (service *ifaceService) getIfaceDescription(ifaceType string, name string) (string, error) {
-	return service.vyosClient.ReturnValue(fmt.Sprintf("interfaces %s %s description", ifaceType, name))
+	result, err := service.vyosClient.ReturnValue(fmt.Sprintf("interfaces %s %s description", ifaceType, name))
+	if err != nil {
+		return "", err
+	}
+	if !result.Success {
+		return "", errors.New(result.Error)
+	}
+	return result.Data.(string), nil
 }
 
 func (service *ifaceService) ifaceIsDisabled(ifaceType, name string) (bool, error) {
@@ -137,7 +144,7 @@ func (service *ifaceService) ifaceIsDisabled(ifaceType, name string) (bool, erro
 		return false, errors.Wrap(err, "")
 	}
 	log.Debugf("interface %s disable state: %v", name, value)
-	if value == "true" {
+	if value.Data.(string) == "true" {
 		return true, nil
 	}
 	return false, nil

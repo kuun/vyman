@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kuun/vyman/services/vyosclient"
 	"github.com/pkg/errors"
+	"strings"
 )
 
 func ShowConfig(c *gin.Context) {
@@ -22,13 +23,16 @@ func ShowConfig(c *gin.Context) {
 		c.Status(400)
 		return
 	}
-	data, err := client.ShowConfig(path)
+	result, err := client.ShowConfig(path)
 	if err != nil {
 		log.Errorf("failed to show config, error: %+v", err)
-		c.JSON(200, gin.H{"success": false, "error": errors.Cause(err)})
+		c.JSON(200, gin.H{"success": false, "error": errors.Cause(err).Error()})
 		return
 	}
-	c.JSON(200, gin.H{"success": true, "data": data})
+	if !result.Success && strings.Contains(result.Error, "Configuration under specified path is empty") {
+		result.Success = true
+	}
+	c.JSON(200, result)
 }
 
 func ReturnValue(c *gin.Context) {
@@ -47,13 +51,13 @@ func ReturnValue(c *gin.Context) {
 		c.Status(400)
 		return
 	}
-	value, err := client.ReturnValue(path)
+	result, err := client.ReturnValue(path)
 	if err != nil {
-		log.Errorf("failed to return value, error: %+v", err)
+		log.Errorf("failed to return result, error: %+v", err)
 		c.JSON(200, gin.H{"success": false, "error": errors.Cause(err)})
 		return
 	}
-	c.JSON(200, gin.H{"success": true, "data": value})
+	c.JSON(200, result)
 }
 
 func ReturnValues(c *gin.Context) {
@@ -72,13 +76,13 @@ func ReturnValues(c *gin.Context) {
 		c.Status(400)
 		return
 	}
-	values, err := client.ReturnValues(path)
+	result, err := client.ReturnValues(path)
 	if err != nil {
-		log.Errorf("failed to return values, error: %+v", err)
+		log.Errorf("failed to return result, error: %+v", err)
 		c.JSON(200, gin.H{"success": false, "error": errors.Cause(err)})
 		return
 	}
-	c.JSON(200, gin.H{"success": true, "data": values})
+	c.JSON(200, result)
 }
 
 func Configure(c *gin.Context) {

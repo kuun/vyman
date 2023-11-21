@@ -57,9 +57,9 @@ func NewVyosError(msg string) *VyosError {
 
 type VyosClient interface {
 	Configure(cmds []*Command) (err error)
-	ShowConfig(path string) (data interface{}, err error)
-	ReturnValue(path string) (value string, err error)
-	ReturnValues(path string) (values []string, err error)
+	ShowConfig(path string) (result *CmdResult, err error)
+	ReturnValue(path string) (result *CmdResult, err error)
+	ReturnValues(path string) (result *CmdResult, err error)
 }
 
 type vyosClient struct {
@@ -106,9 +106,8 @@ ERROR:
 	return err
 }
 
-func (client *vyosClient) ShowConfig(path string) (data interface{}, err error) {
+func (client *vyosClient) ShowConfig(path string) (result *CmdResult, err error) {
 	var httpRes *http.Response
-	var result *CmdResult
 	url := client.buildUrl("retrieve")
 
 	httpRes, err = client.post(url, &Command{
@@ -123,58 +122,25 @@ func (client *vyosClient) ShowConfig(path string) (data interface{}, err error) 
 	if err != nil {
 		goto ERROR
 	}
-	if !result.Success {
-		err = errors.Wrap(NewVyosError(result.Error), "")
-		goto ERROR
-	}
-	return result.Data, nil
+	return result, nil
 ERROR:
 	return nil, err
 }
 
-func (client *vyosClient) ReturnValue(path string) (value string, err error) {
-	var httpRes *http.Response
-	var result *CmdResult
-	url := client.buildUrl("retrieve")
-	var ok bool
-
-	httpRes, err = client.post(url, &Command{
-		Op:   "returnValue",
-		Path: strings.Split(path, " "),
-	})
-	if err != nil {
-		goto ERROR
-	}
-	defer httpRes.Body.Close()
-	result, err = client.parseJsonResponse(httpRes)
-	if err != nil {
-		goto ERROR
-	}
-	if !result.Success {
-		err = errors.Wrap(NewVyosError(result.Error), "")
-		goto ERROR
-	}
-	if result.Data == nil {
-		return "", nil
-	} else {
-		value, ok = result.Data.(string)
-		if !ok {
-			log.Errorf("server return invalid data, result: %#v", result)
-		}
-		return value, nil
-	}
-ERROR:
-	return "", err
+func (client *vyosClient) ReturnValue(path string) (result *CmdResult, err error) {
+	return client.returnValue("returnValue", path)
 }
 
-func (client *vyosClient) ReturnValues(path string) (values []string, err error) {
+func (client *vyosClient) ReturnValues(path string) (result *CmdResult, err error) {
+	return client.returnValue("returnValues", path)
+}
+
+func (client *vyosClient) returnValue(op string, path string) (result *CmdResult, err error) {
 	var httpRes *http.Response
-	var result *CmdResult
 	url := client.buildUrl("retrieve")
-	var ok bool
 
 	httpRes, err = client.post(url, &Command{
-		Op:   "returnValues",
+		Op:   op,
 		Path: strings.Split(path, " "),
 	})
 	if err != nil {
@@ -185,16 +151,7 @@ func (client *vyosClient) ReturnValues(path string) (values []string, err error)
 	if err != nil {
 		goto ERROR
 	}
-	if !result.Success {
-		err = errors.Wrap(NewVyosError(result.Error), "")
-		goto ERROR
-	}
-
-	values, ok = result.Data.([]string)
-	if !ok {
-		log.Errorf("server return invalid data, result: %#v", result)
-	}
-	return values, nil
+	return result, nil
 ERROR:
 	return nil, err
 }

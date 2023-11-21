@@ -38,7 +38,7 @@ func (service *addressService) IsDHCP(ifaceType string, name string) (bool, erro
 	if err != nil {
 		return false, err
 	}
-	if value == "dhcp" {
+	if value.Data == "dhcp" {
 		return true, nil
 	} else {
 		return false, nil

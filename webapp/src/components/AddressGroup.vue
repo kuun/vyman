@@ -50,13 +50,15 @@ const refreshGroup = () => {
           alert('获取地址组列表失败.')
           return;
         }
-        groupList.value = _.map(resp.data.data['address-group'], (value, key) => {
-          console.log(key, value)
-          return {
-            id: key,
-            description: value.description
-          };
-        });
+        if (resp.data.data) {
+          groupList.value = _.map(resp.data.data['address-group'], (value, key) => {
+            console.log(key, value)
+            return {
+              id: key,
+              description: value.description
+            };
+          });
+        }
       })
       .catch((resp) => {
         alert('获取地址组列表失败.')
@@ -93,7 +95,7 @@ const refreshGroup = () => {
         <LinkButton @click="closeGroupDlg" style="width: 80px">取消</LinkButton>
       </div>
     </Dialog>
-    <CheckGrid :data="groupList">
+    <CheckGrid :data="groupList" selectionMode="single">
       <GridColumn field="id" title="ID" width="100"></GridColumn>
       <GridColumn field="description" title="备注"></GridColumn>
     </CheckGrid>
