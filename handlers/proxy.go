@@ -10,7 +10,7 @@ func ShowConfig(c *gin.Context) {
 	client := vyosclient.GetClient()
 
 	reqData := make(map[string]string)
-	err := c.BindJSON(reqData)
+	err := c.BindJSON(&reqData)
 	if err != nil {
 		log.Errorf("failed to parse client request, error: %+v", err)
 		c.Status(400)
@@ -35,7 +35,7 @@ func ReturnValue(c *gin.Context) {
 	client := vyosclient.GetClient()
 
 	reqData := make(map[string]string)
-	err := c.BindJSON(reqData)
+	err := c.BindJSON(&reqData)
 	if err != nil {
 		log.Errorf("failed to parse client request, error: %+v", err)
 		c.Status(400)
@@ -60,7 +60,7 @@ func ReturnValues(c *gin.Context) {
 	client := vyosclient.GetClient()
 
 	reqData := make(map[string]string)
-	err := c.BindJSON(reqData)
+	err := c.BindJSON(&reqData)
 	if err != nil {
 		log.Errorf("failed to parse client request, error: %+v", err)
 		c.Status(400)
@@ -85,7 +85,7 @@ func Configure(c *gin.Context) {
 	client := vyosclient.GetClient()
 
 	cmds := make([]*vyosclient.Command, 0)
-	err := c.BindJSON(cmds)
+	err := c.BindJSON(&cmds)
 	if err != nil {
 		log.Errorf("failed to parse client request, error: %+v", err)
 		c.Status(400)
