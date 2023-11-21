@@ -1,5 +1,6 @@
 <script setup>
 import {computed, ref} from "vue";
+import {CheckBox, DataGrid, GridColumn} from "v3-easyui";
 
 const props = defineProps({
   data: {
@@ -27,6 +28,10 @@ const onCheckedChange = (checked) => {
   allChecked.value = checkedRows.value.length === ipAddrList.value.length;
   rowClicked.value = true;
   nextTick(() => (rowClicked.value = false));
+};
+
+const getSelections = () => {
+  return checkedRows.value;
 };
 </script>
 
