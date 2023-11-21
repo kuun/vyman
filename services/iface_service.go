@@ -144,7 +144,7 @@ func (service *ifaceService) ifaceIsDisabled(ifaceType, name string) (bool, erro
 		return false, errors.Wrap(err, "")
 	}
 	log.Debugf("interface %s disable state: %v", name, value)
-	if value.Data.(string) == "true" {
+	if value.Data == "true" {
 		return true, nil
 	}
 	return false, nil
