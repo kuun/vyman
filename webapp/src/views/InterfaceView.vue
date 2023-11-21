@@ -4,6 +4,7 @@ import {onMounted, ref} from "vue";
 import axios from "axios";
 import IpManager from "../components/IpManager.vue";
 import {useIfaceStore} from "../stores/iface";
+import InterfaceManager from "@/components/InterfaceManager.vue";
 
 const ifaceList = ref([])
 const ifaceStore = useIfaceStore()
@@ -51,7 +52,7 @@ const onSelectionChange = event => {
           <IpManager/>
         </TabPanel>
         <TabPanel :title="'网卡设置'">
-          <p>Tab Panel2</p>
+          <InterfaceManager/>
         </TabPanel>
       </Tabs>
     </LayoutPanel>
