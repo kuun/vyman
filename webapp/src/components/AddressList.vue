@@ -23,6 +23,8 @@ const getError = (key) => {
 watch(() => groupStore.selectedGroup, (newVal, oldVal) => {
   if (newVal !== null) {
     refreshAddress();
+  } else {
+    itemList.value = [];
   }
 })
 
@@ -136,12 +138,10 @@ const refreshAddress = () => {
     </div>
     <Dialog ref="editDlg" bodyCls="f-column" :title="editTitle" :draggable="true" :modal="true" closed :dialogStyle="{height:'180px', width:'350px'}">
       <div class="f-full" style="overflow:auto">
-        <Form ref="groupForm" :model="editing" :rules="formRules" @validate="errors=$event" style="padding:20px 40px">
-          <div>
-            <Label for="address">地址:</Label>
-            <TextBox name="address" v-model="editing.address"></TextBox>
-            <div class="error">{{getError('address')}}</div>
-          </div>
+        <Form ref="groupForm" :model="editing" :rules="formRules" @validate="errors=$event" style="padding:20px 40px" :labelWidth="80" errorType="tooltip">
+          <FormField name="address" label="地址:">
+            <TextBox v-model="editing.address"></TextBox>
+          </FormField>
         </Form>
       </div>
       <div class="dialog-button f-noshrink">

@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {GridColumn, LinkButton, Panel} from "v3-easyui";
+import {Form, FormField, GridColumn, LinkButton, Panel} from "v3-easyui";
 import CheckGrid from "./CheckGrid.vue";
 import config from "../utils/config";
 import _ from "lodash";
@@ -109,6 +109,7 @@ const refreshGroup = () => {
               description: value.description
             };
           });
+          groupStore.setSelectedGroup(null);
         }
       })
       .catch((resp) => {
@@ -133,17 +134,13 @@ const onSelectionChange = (selection) => {
     </div>
     <Dialog ref="groupEditDlg" bodyCls="f-column" :title="groupEditTitle" :draggable="true" :modal="true" closed :dialogStyle="{height:'250px', width:'350px'}">
       <div class="f-full" style="overflow:auto">
-        <Form ref="groupForm" :model="editingGroup" :rules="groupFormRules" @validate="errors=$event" style="padding:20px 40px">
-          <div>
-            <Label for="id">ID:</Label>
-            <TextBox name="id" v-model="editingGroup.id"></TextBox>
-            <div class="error">{{getError('id')}}</div>
-          </div>
-          <div>
-            <Label for="description">备注:</Label>
-            <TextBox name="description" v-model="editingGroup.description"></TextBox>
-            <div class="error">{{getError('description')}}</div>
-          </div>
+        <Form ref="groupForm" :model="editingGroup" :rules="groupFormRules" @validate="errors=$event" style="padding:20px 40px" :labelWidth="80" errorType="tooltip">
+          <FormField name="id" label="ID:">
+            <TextBox v-model="editingGroup.id"></TextBox>
+          </FormField>
+          <FormField name="description" label="备注:">
+            <TextBox v-model="editingGroup.description"></TextBox>
+          </FormField>
         </Form>
       </div>
       <div class="dialog-button f-noshrink">
