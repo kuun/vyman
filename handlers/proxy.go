@@ -23,6 +23,7 @@ func ShowConfig(c *gin.Context) {
 		c.Status(400)
 		return
 	}
+	log.Debugf("show config, path: %s", path)
 	result, err := client.ShowConfig(path)
 	if err != nil {
 		log.Errorf("failed to show config, error: %+v", err)
@@ -32,6 +33,7 @@ func ShowConfig(c *gin.Context) {
 	if !result.Success && strings.Contains(result.Error, "Configuration under specified path is empty") {
 		result.Success = true
 	}
+	log.Debugf("show config result: %#v", result)
 	c.JSON(200, result)
 }
 
@@ -51,12 +53,14 @@ func ReturnValue(c *gin.Context) {
 		c.Status(400)
 		return
 	}
+	log.Debugf("return value, path: %s", path)
 	result, err := client.ReturnValue(path)
 	if err != nil {
 		log.Errorf("failed to return result, error: %+v", err)
 		c.JSON(200, gin.H{"success": false, "error": errors.Cause(err)})
 		return
 	}
+	log.Debugf("return value result: %#v", result)
 	c.JSON(200, result)
 }
 
@@ -76,12 +80,14 @@ func ReturnValues(c *gin.Context) {
 		c.Status(400)
 		return
 	}
+	log.Debugf("return values, path: %s", path)
 	result, err := client.ReturnValues(path)
 	if err != nil {
 		log.Errorf("failed to return result, error: %+v", err)
 		c.JSON(200, gin.H{"success": false, "error": errors.Cause(err)})
 		return
 	}
+	log.Debugf("return values result: %#v", result)
 	c.JSON(200, result)
 }
 
@@ -95,7 +101,7 @@ func Configure(c *gin.Context) {
 		c.Status(400)
 		return
 	}
-
+	log.Debugf("configure, cmds: %#v", cmds)
 	err = client.Configure(cmds)
 	if err != nil {
 		log.Errorf("failed to execute commands, cmds: %#v, error: %+v", cmds, err)
