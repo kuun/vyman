@@ -37,7 +37,7 @@ const getSelections = () => {
 
 
 <template>
-  <DataGrid :data="props.data">
+  <DataGrid :data="props.data" :border="false">
     <GridColumn field="selected" :width="30" align="center">
       <template v-slot:header="scope">
         <CheckBox v-model="allChecked" @checkedChange="onAllCheckedChange($event)"></CheckBox>

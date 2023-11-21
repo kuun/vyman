@@ -4,7 +4,10 @@ import {GridColumn, LinkButton, Panel} from "v3-easyui";
 import CheckGrid from "./CheckGrid.vue";
 import config from "../utils/config";
 import _ from "lodash";
+import {useGroupStore} from "../stores/group";
 
+
+const groupStore = useGroupStore();
 const groupEditTitle = ref("");
 const groupEditDlg = ref(null);
 const groupFormRules = ref({
@@ -14,8 +17,10 @@ const groupFormRules = ref({
 const editingGroup = ref({});
 const groupList = ref([]);
 
+
 onMounted(() => {
   refreshGroup();
+  groupStore.setSelectedGroup(null);
 })
 
 const getError = (key) => {
@@ -23,23 +28,69 @@ const getError = (key) => {
 }
 
 const saveGroup = () => {
-
+  const value = editingGroup.value;
+  const cmds = [
+    config.command('set', 'firewall group address-group', value.id),
+    config.command('set', `firewall group address-group ${value.id} description`, value.description)
+  ];
+  config.configure(cmds)
+      .then((resp) => {
+        if (!resp.data.success) {
+          console.log(resp.data)
+          alert('保存地址组失败.')
+          return;
+        }
+        closeGroupDlg();
+        refreshGroup();
+      })
+      .catch((resp) => {
+        alert('保存地址组失败.')
+      });
 }
 
 const closeGroupDlg = () => {
-
+  editingGroup.value = {};
+  groupEditDlg.value.close();
 }
 
 const addGroup = () => {
-
+  groupEditTitle.value = "添加地址组";
+  editingGroup.value = {};
+  groupEditDlg.value.open();
 }
 
 const modifyGroup = () => {
-
+  const selections = groupList.value.filter(row => row.selected);
+  if (selections.length !== 1) {
+    alert('请选择一个地址组');
+    return;
+  }
+  groupEditTitle.value = "修改地址组";
+  editingGroup.value = selections[0];
+  groupEditDlg.value.open();
 }
 
 const deleteGroup = () => {
-
+  const selections = groupList.value.filter(row => row.selected);
+  if (selections.length < 1) {
+    alert('至少选择一个地址组');
+    return;
+  }
+  const cmds = _.map(selections, (value) => {
+    return config.command('delete', `firewall group address-group ${value.id}`);
+  });
+  config.configure(cmds)
+      .then((resp) => {
+        if (!resp.data.success) {
+          console.log(resp.data)
+          alert('删除地址组失败.')
+          return;
+        }
+        refreshGroup();
+      })
+      .catch((resp) => {
+        alert('删除地址组失败.')
+      });
 }
 
 const refreshGroup = () => {
@@ -64,6 +115,11 @@ const refreshGroup = () => {
         alert('获取地址组列表失败.')
       });
 };
+
+const onSelectionChange = (selection) => {
+  console.log(selection)
+  groupStore.setSelectedGroup(selection);
+}
 
 </script>
 
@@ -95,7 +151,7 @@ const refreshGroup = () => {
         <LinkButton @click="closeGroupDlg" style="width: 80px">取消</LinkButton>
       </div>
     </Dialog>
-    <CheckGrid :data="groupList" selectionMode="single">
+    <CheckGrid :data="groupList" selectionMode="single" @selection-change="onSelectionChange" >
       <GridColumn field="id" title="ID" width="100"></GridColumn>
       <GridColumn field="description" title="备注"></GridColumn>
     </CheckGrid>
