@@ -7,10 +7,10 @@ import AddressList from "../components/AddressList.vue";
 <template>
     <Layout style="width:100%;height:100%;">
       <LayoutPanel region="west" style="width:50%;height:100%">
-        <AddressGroup></AddressGroup>
+        <AddressGroup group-type="address"></AddressGroup>
       </LayoutPanel>
       <LayoutPanel region="center" style="height:100%;width: 100%">
-        <AddressList></AddressList>
+        <AddressList group-type="address"></AddressList>
       </LayoutPanel>
     </Layout>
 </template>
