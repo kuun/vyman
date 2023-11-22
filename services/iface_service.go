@@ -135,6 +135,9 @@ func (service *ifaceService) getIfaceDescription(ifaceType string, name string) 
 	if !result.Success {
 		return "", errors.New(result.Error)
 	}
+	if result.Data == nil {
+		return "", nil
+	}
 	return result.Data.(string), nil
 }
 

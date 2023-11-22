@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref} from "vue";
+import {computed, ref, nextTick} from "vue";
 import {CheckBox, DataGrid, GridColumn} from "v3-easyui";
 
 const props = defineProps({
@@ -13,19 +13,19 @@ const props = defineProps({
 const allChecked = ref(false);
 const rowClicked = ref(false);
 const checkedRows = computed(() => {
-  return props.data.value.filter(row => row.selected);
+  return props.data.filter(row => row.selected);
 });
 const onAllCheckedChange = (checked) => {
   if (rowClicked.value) {
     return;
   }
-  ipAddrList.value.map(row => {
+  props.data.map(row => {
     row.selected = checked;
   });
 };
 
 const onCheckedChange = (checked) => {
-  allChecked.value = checkedRows.value.length === ipAddrList.value.length;
+  allChecked.value = checkedRows.value.length === props.data.length;
   rowClicked.value = true;
   nextTick(() => (rowClicked.value = false));
 };

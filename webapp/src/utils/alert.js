@@ -37,5 +37,13 @@ export default {
       msg: msg,
       icon: "info"
     })
+  },
+
+  alertWarning(msg) {
+    window.$messager.alert({
+      title: "提示",
+      msg: msg,
+      icon: "warning"
+    })
   }
 }
