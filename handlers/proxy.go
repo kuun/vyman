@@ -101,7 +101,11 @@ func Configure(c *gin.Context) {
 		c.Status(400)
 		return
 	}
-	log.Debugf("configure, cmds: %#v", cmds)
+	if log.IsDebugEnabled() {
+		for _, cmd := range cmds {
+			log.Debugf("configure, cmds: %#v", cmd)
+		}
+	}
 	err = client.Configure(cmds)
 	if err != nil {
 		log.Errorf("failed to execute commands, cmds: %#v, error: %+v", cmds, err)

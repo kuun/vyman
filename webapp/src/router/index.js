@@ -22,9 +22,25 @@ const router = createRouter({
           name: 'l2tp',
           component: () => import("../views/L2TPView.vue"),
         }, {
-          path: 'ui/group/ipv4-group',
-          name: 'ipv4-group',
+          path: 'ui/group/ipv4-address-group',
+          name: 'ipv4-address-group',
           component: () => import("../views/AddressGroupView.vue"),
+        }, {
+          path: "ui/group/ipv6-address-group",
+          name: "ipv6-address-group",
+          component: () => import("../views/Ipv6AddressGroupView.vue"),
+        }, {
+          path: 'ui/group/ipv4-network-group',
+          name: 'ipv4-network-group',
+          component: () => import("../views/NetworkGroupView.vue"),
+        }, {
+          path: 'ui/group/ipv6-network-group',
+          name: 'ipv6-network-group',
+          component: () => import("../views/Ipv6NetworkGroupView.vue"),
+        }, {
+          path: 'ui/group/port-group',
+          name: 'port-group',
+          component: () => import("../views/PortGroupView.vue"),
         }, {
           path: 'ui/zone',
           name: 'zone',

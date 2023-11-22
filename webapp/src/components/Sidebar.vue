@@ -24,10 +24,19 @@ const menus = ref([
     iconCls: 'fa fa-object-group',
     children: [{
       text: 'IPv4地址组',
-      path: '/ui/group/ipv4-group'
+      path: '/ui/group/ipv4-address-group'
     }, {
       text: 'IPv6地址组',
-      path: '/ui/group/ipv6-group'
+      path: '/ui/group/ipv6-address-group'
+    }, {
+      text: 'IPv4网络组',
+      path: '/ui/group/ipv4-network-group'
+    }, {
+      text: 'IPv6网络组',
+      path: '/ui/group/ipv6-network-group'
+    }, {
+      text: '端口组',
+      path: '/ui/group/port-group'
     }]
   }, {
     text: "安全域设置",

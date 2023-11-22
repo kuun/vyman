@@ -6,7 +6,12 @@ import config from "../utils/config";
 import _ from "lodash";
 import {useGroupStore} from "../stores/group";
 
-
+const props = defineProps({
+  groupType: {
+    type: String,
+    required: true
+  }
+});
 const groupStore = useGroupStore();
 const groupEditTitle = ref("");
 const groupEditDlg = ref(null);
@@ -30,21 +35,21 @@ const getError = (key) => {
 const saveGroup = () => {
   const value = editingGroup.value;
   const cmds = [
-    config.command('set', 'firewall group address-group', value.id),
-    config.command('set', `firewall group address-group ${value.id} description`, value.description)
+    config.command('set', `firewall group ${props.groupType}-group`, value.id),
+    config.command('set', `firewall group ${props.groupType}-group ${value.id} description`, value.description)
   ];
   config.configure(cmds)
       .then((resp) => {
         if (!resp.data.success) {
           console.log(resp.data)
-          alert('保存地址组失败.')
+          alert('保存失败.')
           return;
         }
         closeGroupDlg();
         refreshGroup();
       })
       .catch((resp) => {
-        alert('保存地址组失败.')
+        alert('保存失败.')
       });
 }
 
@@ -54,7 +59,7 @@ const closeGroupDlg = () => {
 }
 
 const addGroup = () => {
-  groupEditTitle.value = "添加地址组";
+  groupEditTitle.value = "添加";
   editingGroup.value = {};
   groupEditDlg.value.open();
 }
@@ -62,10 +67,10 @@ const addGroup = () => {
 const modifyGroup = () => {
   const selections = groupList.value.filter(row => row.selected);
   if (selections.length !== 1) {
-    alert('请选择一个地址组');
+    alert('请选择一个组');
     return;
   }
-  groupEditTitle.value = "修改地址组";
+  groupEditTitle.value = "修改";
   editingGroup.value = selections[0];
   groupEditDlg.value.open();
 }
@@ -73,36 +78,36 @@ const modifyGroup = () => {
 const deleteGroup = () => {
   const selections = groupList.value.filter(row => row.selected);
   if (selections.length < 1) {
-    alert('至少选择一个地址组');
+    alert('至少选择一个组');
     return;
   }
   const cmds = _.map(selections, (value) => {
-    return config.command('delete', `firewall group address-group ${value.id}`);
+    return config.command('delete', `firewall group ${props.groupType}-group ${value.id}`);
   });
   config.configure(cmds)
       .then((resp) => {
         if (!resp.data.success) {
           console.log(resp.data)
-          alert('删除地址组失败.')
+          alert('删除失败.')
           return;
         }
         refreshGroup();
       })
       .catch((resp) => {
-        alert('删除地址组失败.')
+        alert('删除失败.')
       });
 }
 
 const refreshGroup = () => {
-  config.showConfig('firewall group address-group')
+  config.showConfig(`firewall group ${props.groupType}-group`)
       .then((resp) => {
         if (!resp.data.success) {
           console.log(resp.data)
-          alert('获取地址组列表失败.')
+          alert('获取组列表失败.')
           return;
         }
         if (resp.data.data) {
-          groupList.value = _.map(resp.data.data['address-group'], (value, key) => {
+          groupList.value = _.map(resp.data.data[`${props.groupType}-group`], (value, key) => {
             console.log(key, value)
             return {
               id: key,
@@ -113,7 +118,7 @@ const refreshGroup = () => {
         }
       })
       .catch((resp) => {
-        alert('获取地址组列表失败.')
+        alert('获取组列表失败.')
       });
 };
 
@@ -125,7 +130,7 @@ const onSelectionChange = (selection) => {
 </script>
 
 <template>
-  <Panel style="width:100%;height:100%" :border="false" title="地址组列表">
+  <Panel style="width:100%;height:100%" :border="false" title="组列表">
     <div class="dialog-toolbar">
       <LinkButton iconCls="icon-add" style="width:80px" :plain="true" @click="addGroup">添加</LinkButton>
       <LinkButton iconCls="icon-edit" style="width:80px" :plain="true" @click="modifyGroup">修改</LinkButton>
