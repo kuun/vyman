@@ -19,19 +19,24 @@ const ifaceList = ref([]);
 let useIfaceList = ref([]);
 
 
-const addZone = () => {
+const addZone = async () => {
   zoneEditTitle.value = "添加安全域";
-  loadIfaceList();
+  await loadIfaceList();
   editingZone.value = {};
   zoneEditDlg.value.open();
 }
 
 const saveZone = () => {
   const value = editingZone.value;
-  const cmds = [
-    config.command('set', 'firewall zone', value.name),
-    config.command('set', `firewall zone ${value.name} description`, value.description)
-  ];
+  const cmds = [];
+  if (zoneEditTitle.value === "修改安全域") {
+    cmds.push(config.command('delete', `firewall zone ${value.name} interface`));
+  }
+  cmds.push(config.command('set', 'firewall zone', value.name));
+  cmds.push(config.command('set', `firewall zone ${value.name} description`, value.description));
+  _.each(value.iface, (iface) => {
+    cmds.push(config.command('set', `firewall zone ${value.name} interface`, iface));
+  });
   config.configure(cmds)
     .then((resp) => {
       if (!resp.data.success) {
@@ -43,22 +48,26 @@ const saveZone = () => {
       refreshZone();
     })
     .catch((resp) => {
-      alert('保存安全域失败.')
+      _alert.alertError('保存安全域失败.')
     });
 }
 
-const modifyZone = () => {
+const modifyZone = async () => {
   const selected = zoneList.value.filter((v) => v.selected);
   if (selected.length === 0) {
     _alert.alertWarning('请选择要修改的安全域.')
     return;
   }
   // editingZone.value = _.cloneDeep(selected[0]);
-  loadIfaceList();
+  await loadIfaceList();
+  const curIface = selected[0].iface.split(",");
+  _.each(curIface, (iface) => {
+    ifaceList.value.push({value: iface, text: iface});
+  });
   editingZone.value = {
     name: selected[0].name,
     description: selected[0].description,
-    iface: selected[0].iface.split(",")
+    iface: curIface
   };
   zoneEditTitle.value = "修改安全域";
   zoneEditDlg.value.open();
@@ -71,7 +80,7 @@ const deleteZone = () => {
     return;
   }
   const cmds = [
-    config.command('delete', 'firewall zone', selected[0].id)
+    config.command('delete', 'firewall zone', selected[0].name)
   ];
   config.configure(cmds)
     .then((resp) => {
@@ -91,28 +100,30 @@ const refreshZone = () => {
   config.showConfig('firewall zone')
     .then((resp) => {
       useIfaceList.value = [];
-      zoneList.value = _.map(resp.data.data.zone, (v, k) => {
-        if (v.interface instanceof Array) {
-          _.each(v.interface, (iface) => {
-            useIfaceList.value.push({value: iface, text: iface});
-          })
-        } else {
-          useIfaceList.value.push({value: v.interface, text: v.interface});
-        }
-        return {
-          name: k,
-          iface: (v.interface instanceof Array) ? _.join(v.interface, ",") : v.interface,
-          description: v.description
-        }
-      })
+      if (resp.data.data !== null) {
+        zoneList.value = _.map(resp.data.data.zone, (v, k) => {
+          if (v.interface instanceof Array) {
+            _.each(v.interface, (iface) => {
+              useIfaceList.value.push({value: iface, text: iface});
+            })
+          } else {
+            useIfaceList.value.push({value: v.interface, text: v.interface});
+          }
+          return {
+            name: k,
+            iface: (v.interface instanceof Array) ? _.join(v.interface, ",") : v.interface,
+            description: v.description
+          }
+        })
+      }
     })
     .catch((resp) => {
       _alert.alertError('获取安全域列表失败.')
     })
 }
 
-const loadIfaceList = () => {
-  axios.get('/api/interfaces/ethernet')
+const loadIfaceList = async () => {
+  await axios.get('/api/interfaces/ethernet')
     .then((resp) => {
       ifaceList.value = _.map(resp.data, (v) => {
         return {
@@ -122,12 +133,8 @@ const loadIfaceList = () => {
       });
       _.pullAllWith(ifaceList.value, useIfaceList.value, _.isEqual);
     }).catch((resp) => {
-    alert('获取网卡列表失败.')
-  })
-}
-
-const removeIface = (tag) => {
-  console.log(tag)
+      alert('获取网卡列表失败.')
+    })
 }
 
 const closeZoneDlg = () => {
@@ -159,7 +166,7 @@ onMounted(() => {
           </FormField>
           <FormField name="iface" label="网卡列表:">
             <TagBox v-model="editingZone.iface" valueField="value" textField="text" placeholder="选择网卡"
-                    :limitToList="true" :hasDownArrow="true" @click="removeIface" :data="ifaceList">
+                    :limitToList="true" :hasDownArrow="true" :data="ifaceList">
             </TagBox>
           </FormField>
           <FormField name="description" label="备注:">
