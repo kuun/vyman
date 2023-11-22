@@ -114,8 +114,10 @@ const refreshZone = () => {
             iface: (v.interface instanceof Array) ? _.join(v.interface, ",") : v.interface,
             description: v.description
           }
-        })
+        });
+        return;
       }
+      zoneList.value = [];
     })
     .catch((resp) => {
       _alert.alertError('获取安全域列表失败.')
