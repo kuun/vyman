@@ -30,6 +30,13 @@ const menus = ref([
       path: '/ui/group/ipv6-group'
     }]
   }, {
+    text: "安全域设置",
+    iconCls: 'fa fa-shield-alt',
+    children: [{
+      text: '安全域',
+      path: '/ui/zone'
+    }]
+  }, {
     text: "VPN",
     iconCls: 'fa fa-globe',
     children: [

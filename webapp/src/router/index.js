@@ -25,6 +25,10 @@ const router = createRouter({
           path: 'ui/group/ipv4-group',
           name: 'ipv4-group',
           component: () => import("../views/AddressGroupView.vue"),
+        }, {
+          path: 'ui/zone',
+          name: 'zone',
+          component: () => import("../views/ZoneView.vue"),
         }
       ]
     },
