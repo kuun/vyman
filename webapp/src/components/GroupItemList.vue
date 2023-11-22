@@ -11,6 +11,10 @@ const props = defineProps({
   groupType: {
     type: String,
     required: true
+  },
+  itemType: {
+    type: String,
+    required: true
   }
 });
 const groupStore = useGroupStore();
@@ -38,7 +42,7 @@ const saveItem = () => {
   const value = editing.value;
   const selectedGroup = groupStore.selectedGroup;
   const cmds = [
-    config.command('set', `firewall group ${props.groupType}-group ${selectedGroup.id} ${props.groupType}`, value.content),
+    config.command('set', `firewall group ${props.groupType}-group ${selectedGroup.id} ${props.itemType}`, value.content),
   ];
   config.configure(cmds)
       .then((resp) => {
@@ -85,7 +89,7 @@ const deleteItem = () => {
   }
   const selectedGroup = groupStore.selectedGroup;
   const cmds = selections.map(row => {
-    return config.command('delete', `firewall group ${props.groupType}-group ${selectedGroup.id} ${props.groupType}`,  row.content);
+    return config.command('delete', `firewall group ${props.groupType}-group ${selectedGroup.id} ${props.itemType}`,  row.content);
   });
   config.configure(cmds)
       .then((resp) => {
@@ -105,7 +109,7 @@ const refreshItem = () => {
   // refresh items in selected group
   const selectedGroup = groupStore.selectedGroup;
   if (selectedGroup && selectedGroup.id) {
-    config.returnValues(`firewall group ${props.groupType}-group ${selectedGroup.id} ${props.groupType}`)
+    config.returnValues(`firewall group ${props.groupType}-group ${selectedGroup.id} ${props.itemType}`)
         .then((resp) => {
           if (!resp.data.success) {
             console.log(resp.data)
