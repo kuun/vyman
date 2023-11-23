@@ -50,7 +50,7 @@ const menus = ref([
     iconCls: 'fa fa-shield-alt',
     children: [{
       iconCls: 'fa-solid fa-link remove-tree-file-icon',
-      text: '安全域',
+      text: '策略',
       path: '/ui/firewall/rule'
     }, {
       iconCls: 'fa-solid fa-money-bill remove-tree-file-icon',

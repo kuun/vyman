@@ -42,6 +42,10 @@ const router = createRouter({
           name: 'port-group',
           component: () => import("../views/PortGroupView.vue"),
         }, {
+          path: 'ui/firewall/rule',
+          name: 'rule',
+          component: () => import("../views/RuleView.vue"),
+        }, {
           path: 'ui/firewall/zone',
           name: 'zone',
           component: () => import("../views/ZoneView.vue"),
