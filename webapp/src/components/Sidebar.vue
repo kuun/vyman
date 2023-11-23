@@ -9,7 +9,7 @@ const menus = ref([
     state: 'open',
     iconCls: 'fa fa-ethernet',
     children: [{
-      iconCls: 'fa fa-newspaper',
+      iconCls: 'fa fa-newspaper remove-tree-file-icon',
       text: 'IP管理',
       path: '/ui/interface/ethernet'
     }]
@@ -17,7 +17,7 @@ const menus = ref([
     text: '路由设置',
     iconCls: 'fa fa-network-wired',
     children: [{
-      iconCls: 'fa-solid fa-route',
+      iconCls: 'fa-solid fa-route remove-tree-file-icon',
       text: '静态路由',
       path: '/ui/router/static'
     }]
@@ -25,33 +25,37 @@ const menus = ref([
     text: "对象组管理",
     iconCls: 'fa fa-object-group',
     children: [{
-      iconCls: 'fa fa-group-arrows-rotate',
+      iconCls: 'fa fa-group-arrows-rotate remove-tree-file-icon',
       text: 'IPv4地址组',
       path: '/ui/group/ipv4-address-group'
     }, {
-      iconCls: 'fa fa-group-arrows-rotate',
+      iconCls: 'fa fa-group-arrows-rotate remove-tree-file-icon',
       text: 'IPv6地址组',
       path: '/ui/group/ipv6-address-group'
     }, {
-      iconCls: 'fa fa-layer-group',
+      iconCls: 'fa fa-layer-group remove-tree-file-icon',
       text: 'IPv4网络组',
       path: '/ui/group/ipv4-network-group'
     }, {
-      iconCls: 'fa fa-layer-group',
+      iconCls: 'fa fa-layer-group remove-tree-file-icon',
       text: 'IPv6网络组',
       path: '/ui/group/ipv6-network-group'
     }, {
-      iconCls: 'fa fa-object-group',
+      iconCls: 'fa fa-object-group remove-tree-file-icon',
       text: '端口组',
       path: '/ui/group/port-group'
     }]
   }, {
-    text: "安全域设置",
+    text: "防火墙",
     iconCls: 'fa fa-shield-alt',
     children: [{
-      iconCls: 'fa-solid fa-money-bill',
+      iconCls: 'fa-solid fa-link remove-tree-file-icon',
       text: '安全域',
-      path: '/ui/zone'
+      path: '/ui/firewall/rule'
+    }, {
+      iconCls: 'fa-solid fa-money-bill remove-tree-file-icon',
+      text: '安全域',
+      path: '/ui/firewall/zone'
     }]
   }, {
     text: "VPN",
@@ -91,6 +95,8 @@ const selectMenu = (event) => {
   </SideMenu>
 </template>
 
-<style scoped>
-
+<style>
+.remove-tree-file-icon {
+  background: none !important;
+}
 </style>
