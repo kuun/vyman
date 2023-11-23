@@ -9,6 +9,7 @@ const menus = ref([
     state: 'open',
     iconCls: 'fa fa-ethernet',
     children: [{
+      iconCls: 'fa fa-newspaper',
       text: 'IP管理',
       path: '/ui/interface/ethernet'
     }]
@@ -16,6 +17,7 @@ const menus = ref([
     text: '路由设置',
     iconCls: 'fa fa-network-wired',
     children: [{
+      iconCls: 'fa-solid fa-route',
       text: '静态路由',
       path: '/ui/router/static'
     }]
@@ -23,18 +25,23 @@ const menus = ref([
     text: "对象组管理",
     iconCls: 'fa fa-object-group',
     children: [{
+      iconCls: 'fa fa-group-arrows-rotate',
       text: 'IPv4地址组',
       path: '/ui/group/ipv4-address-group'
     }, {
+      iconCls: 'fa fa-group-arrows-rotate',
       text: 'IPv6地址组',
       path: '/ui/group/ipv6-address-group'
     }, {
+      iconCls: 'fa fa-layer-group',
       text: 'IPv4网络组',
       path: '/ui/group/ipv4-network-group'
     }, {
+      iconCls: 'fa fa-layer-group',
       text: 'IPv6网络组',
       path: '/ui/group/ipv6-network-group'
     }, {
+      iconCls: 'fa fa-object-group',
       text: '端口组',
       path: '/ui/group/port-group'
     }]
@@ -42,6 +49,7 @@ const menus = ref([
     text: "安全域设置",
     iconCls: 'fa fa-shield-alt',
     children: [{
+      iconCls: 'fa-solid fa-money-bill',
       text: '安全域',
       path: '/ui/zone'
     }]
