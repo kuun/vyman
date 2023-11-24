@@ -115,6 +115,8 @@ const refreshGroup = () => {
             };
           });
           groupStore.setSelectedGroup(null);
+        } else {
+          groupList.value = [];
         }
       })
       .catch((resp) => {

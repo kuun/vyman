@@ -32,11 +32,12 @@ const getError = (key) => {
 
 }
 
-const saveGroup = () => {
+const save = () => {
   const value = editingRuleSet.value;
   const cmds = [
-    config.command('set', `firewall group ${props.groupType}-group`, value.id),
-    config.command('set', `firewall group ${props.groupType}-group ${value.id} description`, value.description)
+    config.command('set', `firewall name`, value.id),
+    config.command('set', `firewall name ${value.id} description`, value.description),
+    config.command('set', `firewall name ${value.id} default-action`, value['default-action']),
   ];
   config.configure(cmds)
       .then((resp) => {
@@ -82,7 +83,7 @@ const deleteRuleSet = () => {
     return;
   }
   const cmds = _.map(selections, (value) => {
-    return config.command('delete', `firewall group ${props.groupType}-group ${value.id}`);
+    return config.command('delete', `firewall name ${value.id}`);
   });
   config.configure(cmds)
       .then((resp) => {
@@ -111,10 +112,13 @@ const refresh = () => {
             console.log(key, value)
             return {
               id: key,
-              description: value.description
+              description: value.description,
+              'default-action': value['default-action']
             };
           });
-          groupStore.setSelectedGroup(null);
+          ruleStore.setSelectedRuleSet(null);
+        } else {
+          rulesetList.value = [];
         }
       })
       .catch((resp) => {
@@ -152,7 +156,7 @@ const onSelectionChange = (selection) => {
         </Form>
       </div>
       <div class="dialog-button f-noshrink">
-        <LinkButton @click="saveGroup" style="width: 80px">保存</LinkButton>
+        <LinkButton @click="save" style="width: 80px">保存</LinkButton>
         <LinkButton @click="closeDlg" style="width: 80px">取消</LinkButton>
       </div>
     </Dialog>
